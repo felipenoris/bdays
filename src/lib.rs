@@ -18,6 +18,32 @@ pub trait HolidayCalendar<T: Datelike + Copy> {
         }
         new_date
     }
+
+    fn advance_bdays(&self, date: T, bdays_count: i32) -> T {
+        let mut new_date = self.to_bday(date, true);
+
+        let inc_fwd = match bdays_count.signum() {
+            0 => return new_date, // nothing to do
+            1 => true, // bdays_count is positive
+            -1 => false, // bdays_count is negative
+            _ => panic!("signum function is expected to return 0, 1 or -1."),
+        };
+
+        let mut num_iterations = bdays_count.abs();
+
+        while num_iterations > 0 {
+            new_date = next_date(new_date, inc_fwd);
+
+            // Looks for previous / next Business Day
+            while !self.is_bday(new_date) {
+                new_date = next_date(new_date, inc_fwd);
+            }
+
+            num_iterations += -1;
+        }
+
+        new_date
+    }
 }
 
 fn next_date<T: Datelike + Copy>(date: T, fwd: bool) -> T {
@@ -34,8 +60,8 @@ fn next_date<T: Datelike + Copy>(date: T, fwd: bool) -> T {
         None =>  {
             if fwd {
                 date
-                .with_year(date.year() + 1).unwrap()
-                .with_ordinal(1).unwrap()
+                    .with_year(date.year() + 1).unwrap()
+                    .with_ordinal(1).unwrap()
             } else {
                 date
                     .with_year(date.year() - 1).unwrap()

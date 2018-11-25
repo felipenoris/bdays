@@ -48,7 +48,7 @@ impl<T: Datelike + Copy> HolidayCalendar<T> for BRSettlement {
                 return true
             }
 
-            // Easter occurs up to April, so Corpus Christi will be up to July in the worst case, which is before August (mm < 8). See `test/easter-min-max.jl`.
+            // Easter occurs up to April, so Corpus Christi will be up to July in the worst case, which is before August (mm < 8).
             // Holidays based on easter date.
             let dt_rata = date.num_days_from_ce();
             let e_rata = easter::easter_num_days_from_ce(yy).unwrap();

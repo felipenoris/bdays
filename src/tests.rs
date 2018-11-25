@@ -285,10 +285,26 @@ fn test_br_settlement() {
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 05, 29)), true); // wednesday
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 05, 30)), false); // Corpus Christi
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 05, 31)), true); // friday
+}
 
+#[test]
+fn test_to_bday() {
+    let cal = brazil::BRSettlement;
     assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 08), true), NaiveDate::from_ymd(2013, 02, 08)); // regular friday
     assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 08), false), NaiveDate::from_ymd(2013, 02, 08)); // regular friday
     assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 09), true), NaiveDate::from_ymd(2013, 02, 13)); // after carnaval
     assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 13), false), NaiveDate::from_ymd(2013, 02, 13)); // after carnaval
     assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 12), false), NaiveDate::from_ymd(2013, 02, 08)); // before carnaval
+}
+
+#[test]
+fn test_advance_bdays() {
+    let cal = brazil::BRSettlement;
+    assert_eq!(cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 0), NaiveDate::from_ymd(2013, 02, 06)); // regular wednesday
+    assert_eq!(cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 1), NaiveDate::from_ymd(2013, 02, 07)); // regular thursday
+    assert_eq!(cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 07), -1), NaiveDate::from_ymd(2013, 02, 06)); // regular thursday
+    assert_eq!(cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 2), NaiveDate::from_ymd(2013, 02, 08)); // regular friday
+    assert_eq!(cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 3), NaiveDate::from_ymd(2013, 02, 13)); // after carnaval wednesday
+    assert_eq!(cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 4), NaiveDate::from_ymd(2013, 02, 14)); // after carnaval thursday
+    assert_eq!(cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 14), -4), NaiveDate::from_ymd(2013, 02, 06)); // after carnaval thursday
 }
