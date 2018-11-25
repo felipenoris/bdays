@@ -3,6 +3,18 @@ use super::{WeekendsOnly, HolidayCalendar, easter, brazil};
 use chrono::{NaiveDate, Datelike};
 
 #[test]
+fn test_next_date() {
+    assert_eq!(super::next_date(NaiveDate::from_ymd(2018, 11, 23), true), NaiveDate::from_ymd(2018, 11, 24));
+    assert_eq!(super::next_date(NaiveDate::from_ymd(2018, 11, 23), false), NaiveDate::from_ymd(2018, 11, 22));
+    assert_eq!(super::next_date(NaiveDate::from_ymd(2018, 12, 31), true), NaiveDate::from_ymd(2019, 1, 1));
+    assert_eq!(super::next_date(NaiveDate::from_ymd(2018, 12, 31), false), NaiveDate::from_ymd(2018, 12, 30));
+    assert_eq!(super::next_date(NaiveDate::from_ymd(2019, 1, 1), true), NaiveDate::from_ymd(2019, 1, 2));
+    assert_eq!(super::next_date(NaiveDate::from_ymd(2019, 1, 1), false), NaiveDate::from_ymd(2018, 12, 31));
+    assert_eq!(super::next_date(NaiveDate::from_ymd(2018, 11, 30), true), NaiveDate::from_ymd(2018, 12, 1));
+    assert_eq!(super::next_date(NaiveDate::from_ymd(2018, 12, 1), false), NaiveDate::from_ymd(2018, 11, 30));
+}
+
+#[test]
 fn test_weekend_calendar() {
 
     let cal = WeekendsOnly;
@@ -273,4 +285,10 @@ fn test_br_settlement() {
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 05, 29)), true); // wednesday
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 05, 30)), false); // Corpus Christi
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 05, 31)), true); // friday
+
+    assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 08), true), NaiveDate::from_ymd(2013, 02, 08)); // regular friday
+    assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 08), false), NaiveDate::from_ymd(2013, 02, 08)); // regular friday
+    assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 09), true), NaiveDate::from_ymd(2013, 02, 13)); // after carnaval
+    assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 13), false), NaiveDate::from_ymd(2013, 02, 13)); // after carnaval
+    assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 12), false), NaiveDate::from_ymd(2013, 02, 08)); // before carnaval
 }
