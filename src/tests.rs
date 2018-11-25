@@ -308,3 +308,45 @@ fn test_advance_bdays() {
     assert_eq!(cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 4), NaiveDate::from_ymd(2013, 02, 14)); // after carnaval thursday
     assert_eq!(cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 14), -4), NaiveDate::from_ymd(2013, 02, 06)); // after carnaval thursday
 }
+
+#[test]
+fn test_bdays() {
+    let cal = brazil::BRSettlement;
+
+    {
+        let d0 = NaiveDate::from_ymd(2018, 11, 26);
+        let d1 = NaiveDate::from_ymd(2018, 11, 27);
+        assert_eq!(cal.bdays(d0, d0), 0);
+        assert_eq!(cal.bdays(d0, d1), 1);
+        assert_eq!(cal.bdays(d1, d0), -1);
+    }
+
+    {
+        let d0 = NaiveDate::from_ymd(2018, 11, 25);
+        let d1 = NaiveDate::from_ymd(2018, 11, 27);
+        assert_eq!(cal.bdays(d0, d0), 0);
+        assert_eq!(cal.bdays(d0, d1), 1);
+        assert_eq!(cal.bdays(d1, d0), -1);
+    }
+
+    {
+        let d0 = NaiveDate::from_ymd(2018, 11, 23);
+        let d1 = NaiveDate::from_ymd(2018, 11, 27);
+        assert_eq!(cal.bdays(d0, d0), 0);
+        assert_eq!(cal.bdays(d0, d1), 2);
+        assert_eq!(cal.bdays(d1, d0), -2);
+    }
+
+    assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 06)), 0);
+    assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 07)), 1);
+    assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 07), NaiveDate::from_ymd(2013, 02, 06)), -1);
+    assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 08)), 2);
+    assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 08), NaiveDate::from_ymd(2013, 02, 06)), -2);
+    assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 09)), 3);
+    assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 10)), 3);
+    assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 11)), 3);
+    assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 12)), 3);
+    assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 13)), 3);
+    assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 14)), 4);
+    assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 14), NaiveDate::from_ymd(2013, 02, 06)), -4);
+}

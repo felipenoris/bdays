@@ -5,7 +5,7 @@ use easter;
 
 pub struct BRSettlement;
 
-impl<T: Datelike + Copy> HolidayCalendar<T> for BRSettlement {
+impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for BRSettlement {
 
     fn is_holiday(&self, date: T) -> bool {
 
