@@ -1,5 +1,5 @@
 
-use super::{WeekendsOnly, HolidayCalendar, easter, brazil};
+use super::{WeekendsOnly, HolidayCalendar, easter, brazil, HolidayCalendarCache};
 use chrono::{NaiveDate, Datelike};
 
 #[test]
@@ -349,4 +349,50 @@ fn test_bdays() {
     assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 13)), 3);
     assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 14)), 4);
     assert_eq!(cal.bdays(NaiveDate::from_ymd(2013, 02, 14), NaiveDate::from_ymd(2013, 02, 06)), -4);
+}
+
+#[test]
+fn test_holiday_calendar_cache() {
+    let uncached_cal = brazil::BRSettlement;
+
+    let d0 = NaiveDate::from_ymd(1980, 1, 1);
+    let d1 = NaiveDate::from_ymd(2100, 12, 31);
+    let cached_cal = HolidayCalendarCache::new(brazil::BRSettlement, d0, d1);
+
+    let mut dt = d0;
+    while dt <= d1 {
+        assert_eq!(cached_cal.is_bday(dt), uncached_cal.is_bday(dt));
+        assert_eq!(!cached_cal.is_holiday(dt), uncached_cal.is_bday(dt));
+        dt = NaiveDate::from_num_days_from_ce(dt.num_days_from_ce() + 1);
+    }
+
+    // to_bday
+    assert_eq!(cached_cal.to_bday(NaiveDate::from_ymd(2013, 02, 08), true), NaiveDate::from_ymd(2013, 02, 08)); // regular friday
+    assert_eq!(cached_cal.to_bday(NaiveDate::from_ymd(2013, 02, 08), false), NaiveDate::from_ymd(2013, 02, 08)); // regular friday
+    assert_eq!(cached_cal.to_bday(NaiveDate::from_ymd(2013, 02, 09), true), NaiveDate::from_ymd(2013, 02, 13)); // after carnaval
+    assert_eq!(cached_cal.to_bday(NaiveDate::from_ymd(2013, 02, 13), false), NaiveDate::from_ymd(2013, 02, 13)); // after carnaval
+    assert_eq!(cached_cal.to_bday(NaiveDate::from_ymd(2013, 02, 12), false), NaiveDate::from_ymd(2013, 02, 08)); // before carnaval
+
+    // advance_bdays
+    assert_eq!(cached_cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 0), NaiveDate::from_ymd(2013, 02, 06)); // regular wednesday
+    assert_eq!(cached_cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 1), NaiveDate::from_ymd(2013, 02, 07)); // regular thursday
+    assert_eq!(cached_cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 07), -1), NaiveDate::from_ymd(2013, 02, 06)); // regular thursday
+    assert_eq!(cached_cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 2), NaiveDate::from_ymd(2013, 02, 08)); // regular friday
+    assert_eq!(cached_cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 3), NaiveDate::from_ymd(2013, 02, 13)); // after carnaval wednesday
+    assert_eq!(cached_cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 4), NaiveDate::from_ymd(2013, 02, 14)); // after carnaval thursday
+    assert_eq!(cached_cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 14), -4), NaiveDate::from_ymd(2013, 02, 06)); // after carnaval thursday
+
+    // bdays
+    assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 06)), 0);
+    assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 07)), 1);
+    assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 07), NaiveDate::from_ymd(2013, 02, 06)), -1);
+    assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 08)), 2);
+    assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 08), NaiveDate::from_ymd(2013, 02, 06)), -2);
+    assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 09)), 3);
+    assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 10)), 3);
+    assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 11)), 3);
+    assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 12)), 3);
+    assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 13)), 3);
+    assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 14)), 4);
+    assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 14), NaiveDate::from_ymd(2013, 02, 06)), -4);
 }

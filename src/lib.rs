@@ -1,11 +1,13 @@
 
 extern crate chrono;
 
+use std::fmt::Display;
 use chrono::Datelike;
 use chrono::Weekday;
 use std::cmp::PartialOrd;
 
 pub trait HolidayCalendar<T: Datelike + Copy + PartialOrd> {
+
     fn is_holiday(&self, date: T) -> bool;
 
     fn is_bday(&self, date: T) -> bool {
@@ -111,6 +113,85 @@ pub fn is_weekend<T: Datelike + Copy>(date: T) -> bool {
     match date.weekday() {
         Weekday::Sat | Weekday::Sun => true,
         _ => false
+    }
+}
+
+pub struct HolidayCalendarCache<T: Datelike + Copy + PartialOrd> {
+    is_bday_vec: Vec<bool>,
+    bdays_counter_vec: Vec<usize>,
+    dt_min: T,
+    dt_max: T,
+}
+
+impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendarCache<T> {
+
+    pub fn new<H: HolidayCalendar<T>>(calendar: H, dt_min: T, dt_max: T) -> HolidayCalendarCache<T> {
+        if dt_min > dt_max {
+            panic!("dt_min {} should not be greater than dt_max {}.", dt_min, dt_max);
+        }
+
+        let len = (dt_max.num_days_from_ce() - dt_min.num_days_from_ce() + 1) as usize;
+        let mut is_bday_vec: Vec<bool> = Vec::with_capacity(len);
+        let mut bdays_counter_vec: Vec<usize> = Vec::with_capacity(len);
+
+        is_bday_vec.push(calendar.is_bday(dt_min));
+
+        let mut bdays_counter = 0;
+        bdays_counter_vec.push(bdays_counter);
+
+        let mut dt = next_date(dt_min, true);
+        for _i in 1..len {
+            let dt_is_bday = calendar.is_bday(dt);
+            is_bday_vec.push(dt_is_bday);
+
+            if dt_is_bday {
+                bdays_counter += 1;
+            }
+
+            bdays_counter_vec.push(bdays_counter);
+            dt = next_date(dt, true);
+        }
+
+        if is_bday_vec.len() != bdays_counter_vec.len() {
+            panic!("lengths must match.");
+        }
+
+        HolidayCalendarCache{
+            is_bday_vec,
+            bdays_counter_vec,
+            dt_min,
+            dt_max,
+        }
+    }
+
+    fn row_index(&self, date: T) -> usize {
+        (date.num_days_from_ce() - self.dt_min.num_days_from_ce()) as usize
+    }
+
+    fn assert_in_bounds(&self, date: T) {
+        if date < self.dt_min || self.dt_max < date {
+            panic!("Date {} out of bounds of holiday calendar cache. [{}, {}].", date, self.dt_min, self.dt_max);
+        }
+    }
+}
+
+impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendar<T> for HolidayCalendarCache<T> {
+
+    fn is_holiday(&self, date: T) -> bool {
+        self.assert_in_bounds(date);
+        !self.is_bday_vec[ self.row_index(date) ]
+    }
+
+    fn is_bday(&self, date: T) -> bool {
+        self.assert_in_bounds(date);
+        self.is_bday_vec[ self.row_index(date) ]
+    }
+
+    fn bdays(&self, mut d0: T, mut d1: T) -> i32 {
+        d0 = self.to_bday(d0, true);
+        d1 = self.to_bday(d1, true);
+
+        self.bdays_counter_vec[ self.row_index(d1) ] as i32 - self.bdays_counter_vec[ self.row_index(d0) ] as i32
     }
 }
 
