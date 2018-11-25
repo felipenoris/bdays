@@ -5,9 +5,9 @@ use easter;
 
 pub struct BRSettlement;
 
-impl<T: Datelike> HolidayCalendar<T> for BRSettlement {
+impl<T: Datelike + Copy> HolidayCalendar<T> for BRSettlement {
 
-    fn is_holiday(&self, date: &T) -> bool {
+    fn is_holiday(&self, date: T) -> bool {
 
         let (yy, mm, dd) = (date.year(), date.month(), date.day());
 

@@ -9,22 +9,22 @@ fn test_weekend_calendar() {
 
     {
         let dt = NaiveDate::from_ymd(2018, 11, 23);
-        assert_eq!(cal.is_bday(&dt), true);
+        assert_eq!(cal.is_bday(dt), true);
     }
 
     {
         let dt = NaiveDate::from_ymd(2018, 11, 24);
-        assert_eq!(cal.is_bday(&dt), false);
+        assert_eq!(cal.is_bday(dt), false);
     }
 
     {
         let dt = NaiveDate::from_ymd(2018, 11, 25);
-        assert_eq!(cal.is_bday(&dt), false)
+        assert_eq!(cal.is_bday(dt), false)
     }
 
     {
         let dt = NaiveDate::from_ymd(2018, 11, 26);
-        assert_eq!(cal.is_bday(&dt), true)
+        assert_eq!(cal.is_bday(dt), true)
     }
 }
 
@@ -227,50 +227,50 @@ fn test_br_settlement() {
     // Brazil HolidayCalendar tests
     let cal = brazil::BRSettlement;
 
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2014, 12, 31)), true); // wednesday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 01, 01)), false); // new year
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 01, 02)), true); // friday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2014, 12, 31)), true); // wednesday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 01, 01)), false); // new year
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 01, 02)), true); // friday
 
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 04, 20)), true); // monday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 04, 21)), false); // tiradentes
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 04, 22)), true); // wednesday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 04, 20)), true); // monday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 04, 21)), false); // tiradentes
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 04, 22)), true); // wednesday
 
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 04, 30)), true); // thursday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 05, 01)), false); // labor day
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 05, 02)), false); // saturday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 04, 30)), true); // thursday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 05, 01)), false); // labor day
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 05, 02)), false); // saturday
 
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 09, 06)), false); // sunday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 09, 07)), false); // independence day
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 09, 08)), true); // tuesday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 09, 06)), false); // sunday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 09, 07)), false); // independence day
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 09, 08)), true); // tuesday
 
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 10, 11)), false); // sunday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 10, 12)), false); // Nossa Senhora Aparecida
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 10, 13)), true); // tuesday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 10, 11)), false); // sunday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 10, 12)), false); // Nossa Senhora Aparecida
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 10, 13)), true); // tuesday
 
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 11, 01)), false); // sunday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 11, 02)), false); // Finados
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2015, 11, 03)), true); // tuesday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 11, 01)), false); // sunday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 11, 02)), false); // Finados
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 11, 03)), true); // tuesday
 
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 11, 14)), true); // thursday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 11, 15)), false); // Republic
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 11, 16)), false); // saturday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 11, 14)), true); // thursday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 11, 15)), false); // Republic
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 11, 16)), false); // saturday
 
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 12, 24)), true); // tuesday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 12, 25)), false); // Christmas
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 12, 26)), true); // thursday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 12, 24)), true); // tuesday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 12, 25)), false); // Christmas
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 12, 26)), true); // thursday
 
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 02, 08)), true); // friday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 02, 09)), false); // saturday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 02, 10)), false); // sunday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 02, 11)), false); // segunda carnaval
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 02, 12)), false); // terca carnaval
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 02, 13)), true); // wednesday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 02, 08)), true); // friday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 02, 09)), false); // saturday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 02, 10)), false); // sunday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 02, 11)), false); // segunda carnaval
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 02, 12)), false); // terca carnaval
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 02, 13)), true); // wednesday
 
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 03, 28)), true); // thursday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 03, 29)), false); // sexta-feira santa
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 03, 30)), false); // saturday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 03, 28)), true); // thursday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 03, 29)), false); // sexta-feira santa
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 03, 30)), false); // saturday
 
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 05, 29)), true); // wednesday
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 05, 30)), false); // Corpus Christi
-    assert_eq!(cal.is_bday(&NaiveDate::from_ymd(2013, 05, 31)), true); // friday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 05, 29)), true); // wednesday
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 05, 30)), false); // Corpus Christi
+    assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 05, 31)), true); // friday
 }
