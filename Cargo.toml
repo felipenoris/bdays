@@ -11,6 +11,9 @@ keywords = ["date", "calendar"]
 categories = ["date-and-time"]
 readme = "README.md"
 
+[badges]
+travis-ci = { repository = "felipenoris/bdays" }
+
 [dependencies]
 chrono = "0.4.6"
 

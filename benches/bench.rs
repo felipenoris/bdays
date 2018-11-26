@@ -31,7 +31,7 @@ fn bench_brsettlement(bench: &mut Bencher) {
 
 fn bench_brsettlement_cached(bench: &mut Bencher) {
 
-	let cal = bdays::calendars::brazil::BRSettlement;
+    let cal = bdays::calendars::brazil::BRSettlement;
     let d0 = chrono::NaiveDate::from_ymd(2015, 06, 29);
     let d1 = chrono::NaiveDate::from_ymd(2100, 12, 20);
 
