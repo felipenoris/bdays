@@ -118,7 +118,7 @@ pub fn is_weekend<T: Datelike + Copy>(date: T) -> bool {
 
 pub struct HolidayCalendarCache<T: Datelike + Copy + PartialOrd> {
     is_bday_vec: Vec<bool>,
-    bdays_counter_vec: Vec<usize>,
+    bdays_counter_vec: Vec<i32>,
     dt_min: T,
     dt_max: T,
 }
@@ -132,7 +132,7 @@ impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendarCache<T> {
 
         let len = (dt_max.num_days_from_ce() - dt_min.num_days_from_ce() + 1) as usize;
         let mut is_bday_vec: Vec<bool> = Vec::with_capacity(len);
-        let mut bdays_counter_vec: Vec<usize> = Vec::with_capacity(len);
+        let mut bdays_counter_vec: Vec<i32> = Vec::with_capacity(len);
 
         is_bday_vec.push(calendar.is_bday(dt_min));
 
@@ -190,7 +190,7 @@ impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendar<T> for HolidayCa
         d0 = self.to_bday(d0, true);
         d1 = self.to_bday(d1, true);
 
-        self.bdays_counter_vec[ self.row_index(d1) ] as i32 - self.bdays_counter_vec[ self.row_index(d0) ] as i32
+        self.bdays_counter_vec[ self.row_index(d1) ] - self.bdays_counter_vec[ self.row_index(d0) ]
     }
 }
 
