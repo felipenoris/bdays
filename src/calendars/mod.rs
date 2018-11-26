@@ -2,6 +2,7 @@
 use HolidayCalendar;
 use chrono::Datelike;
 
+/// Holiday Calendars for Brazil.
 pub mod brazil;
 
 /// The `WeekendsOnly` holiday calendar always returns `false` for method `is_holiday`.
