@@ -1,5 +1,5 @@
 
-use super::{WeekendsOnly, HolidayCalendar, easter, brazil, HolidayCalendarCache};
+use super::{HolidayCalendar, easter, calendars, HolidayCalendarCache};
 use chrono::{NaiveDate, Datelike};
 
 #[test]
@@ -15,9 +15,31 @@ fn test_next_date() {
 }
 
 #[test]
+fn test_weekday() {
+    assert!(super::is_weekday(NaiveDate::from_ymd(2018, 11, 26)));
+    assert!(super::is_weekday(NaiveDate::from_ymd(2018, 11, 27)));
+    assert!(super::is_weekday(NaiveDate::from_ymd(2018, 11, 28)));
+    assert!(super::is_weekday(NaiveDate::from_ymd(2018, 11, 29)));
+    assert!(super::is_weekday(NaiveDate::from_ymd(2018, 11, 30)));
+    assert!(!super::is_weekday(NaiveDate::from_ymd(2018, 12, 01)));
+    assert!(!super::is_weekday(NaiveDate::from_ymd(2018, 12, 02)));
+}
+
+#[test]
+fn test_weekend() {
+    assert!(!super::is_weekend(NaiveDate::from_ymd(2018, 11, 26)));
+    assert!(!super::is_weekend(NaiveDate::from_ymd(2018, 11, 27)));
+    assert!(!super::is_weekend(NaiveDate::from_ymd(2018, 11, 28)));
+    assert!(!super::is_weekend(NaiveDate::from_ymd(2018, 11, 29)));
+    assert!(!super::is_weekend(NaiveDate::from_ymd(2018, 11, 30)));
+    assert!(super::is_weekend(NaiveDate::from_ymd(2018, 12, 01)));
+    assert!(super::is_weekend(NaiveDate::from_ymd(2018, 12, 02)));
+}
+
+#[test]
 fn test_weekend_calendar() {
 
-    let cal = WeekendsOnly;
+    let cal = calendars::WeekendsOnly;
 
     {
         let dt = NaiveDate::from_ymd(2018, 11, 23);
@@ -237,7 +259,7 @@ fn test_easter() {
 #[test]
 fn test_br_settlement() {
     // Brazil HolidayCalendar tests
-    let cal = brazil::BRSettlement;
+    let cal = calendars::brazil::BRSettlement;
 
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2014, 12, 31)), true); // wednesday
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 01, 01)), false); // new year
@@ -289,7 +311,7 @@ fn test_br_settlement() {
 
 #[test]
 fn test_to_bday() {
-    let cal = brazil::BRSettlement;
+    let cal = calendars::brazil::BRSettlement;
     assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 08), true), NaiveDate::from_ymd(2013, 02, 08)); // regular friday
     assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 08), false), NaiveDate::from_ymd(2013, 02, 08)); // regular friday
     assert_eq!(cal.to_bday(NaiveDate::from_ymd(2013, 02, 09), true), NaiveDate::from_ymd(2013, 02, 13)); // after carnaval
@@ -299,7 +321,7 @@ fn test_to_bday() {
 
 #[test]
 fn test_advance_bdays() {
-    let cal = brazil::BRSettlement;
+    let cal = calendars::brazil::BRSettlement;
     assert_eq!(cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 0), NaiveDate::from_ymd(2013, 02, 06)); // regular wednesday
     assert_eq!(cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 06), 1), NaiveDate::from_ymd(2013, 02, 07)); // regular thursday
     assert_eq!(cal.advance_bdays(NaiveDate::from_ymd(2013, 02, 07), -1), NaiveDate::from_ymd(2013, 02, 06)); // regular thursday
@@ -311,7 +333,7 @@ fn test_advance_bdays() {
 
 #[test]
 fn test_bdays() {
-    let cal = brazil::BRSettlement;
+    let cal = calendars::brazil::BRSettlement;
 
     {
         let d0 = NaiveDate::from_ymd(2018, 11, 26);
@@ -353,11 +375,11 @@ fn test_bdays() {
 
 #[test]
 fn test_holiday_calendar_cache() {
-    let uncached_cal = brazil::BRSettlement;
+    let uncached_cal = calendars::brazil::BRSettlement;
 
     let d0 = NaiveDate::from_ymd(1980, 1, 1);
     let d1 = NaiveDate::from_ymd(2100, 12, 31);
-    let cached_cal = HolidayCalendarCache::new(brazil::BRSettlement, d0, d1);
+    let cached_cal = HolidayCalendarCache::new(calendars::brazil::BRSettlement, d0, d1);
 
     let mut dt = d0;
     while dt <= d1 {
@@ -403,7 +425,7 @@ fn test_holiday_calendar_cache() {
 fn test_holiday_calendar_cache_is_bday_panic() {
     let d0 = NaiveDate::from_ymd(1980, 1, 1);
     let d1 = NaiveDate::from_ymd(2100, 12, 31);
-    let cached_cal = HolidayCalendarCache::new(brazil::BRSettlement, d0, d1);
+    let cached_cal = HolidayCalendarCache::new(calendars::brazil::BRSettlement, d0, d1);
     cached_cal.is_bday(NaiveDate::from_ymd(2101, 1, 1));
 }
 
@@ -412,7 +434,7 @@ fn test_holiday_calendar_cache_is_bday_panic() {
 fn test_holiday_calendar_cache_bdays_panic_1() {
     let d0 = NaiveDate::from_ymd(1980, 1, 1);
     let d1 = NaiveDate::from_ymd(2100, 12, 31);
-    let cached_cal = HolidayCalendarCache::new(brazil::BRSettlement, d0, d1);
+    let cached_cal = HolidayCalendarCache::new(calendars::brazil::BRSettlement, d0, d1);
     cached_cal.bdays(NaiveDate::from_ymd(2000, 1, 1), NaiveDate::from_ymd(2101, 1, 1));
 }
 
@@ -421,6 +443,6 @@ fn test_holiday_calendar_cache_bdays_panic_1() {
 fn test_holiday_calendar_cache_bdays_panic_2() {
     let d0 = NaiveDate::from_ymd(1980, 1, 1);
     let d1 = NaiveDate::from_ymd(2100, 12, 31);
-    let cached_cal = HolidayCalendarCache::new(brazil::BRSettlement, d0, d1);
+    let cached_cal = HolidayCalendarCache::new(calendars::brazil::BRSettlement, d0, d1);
     cached_cal.bdays(NaiveDate::from_ymd(1970, 1, 1), NaiveDate::from_ymd(2000, 1, 1));
 }

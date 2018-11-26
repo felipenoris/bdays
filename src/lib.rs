@@ -6,8 +6,58 @@ use chrono::Datelike;
 use chrono::Weekday;
 use std::cmp::PartialOrd;
 
+/// Algorithms to calculate easter dates.
+pub mod easter;
+
+/// A set of holiday calendars built into bdays crate.
+pub mod calendars;
+
+#[cfg(test)]
+mod tests;
+
+/// Returns `true` if `date` occurs on a Saturday or a Sunday.
+pub fn is_weekend<T: Datelike + Copy>(date: T) -> bool {
+    match date.weekday() {
+        Weekday::Sat | Weekday::Sun => true,
+        _ => false
+    }
+}
+
+/// Returns `true` if `date` does not occur on a weekend.
+pub fn is_weekday<T: Datelike + Copy>(date: T) -> bool {
+    !is_weekend(date)
+}
+
+fn next_date<T: Datelike + Copy>(date: T, fwd: bool) -> T {
+    let inc: i32 = {
+        if fwd {
+            1
+        } else {
+            -1
+        }
+    };
+
+    match date.with_ordinal((date.ordinal() as i32 + inc) as u32) {
+        Some(dt) => dt,
+        None =>  {
+            if fwd {
+                date
+                    .with_year(date.year() + 1).unwrap()
+                    .with_ordinal(1).unwrap()
+            } else {
+                date
+                    .with_year(date.year() - 1).unwrap()
+                    .with_month(12).unwrap()
+                    .with_day(31).unwrap()
+            }
+        }
+    }
+}
+
+/// Abstraction for a Holiday Calendar.
 pub trait HolidayCalendar<T: Datelike + Copy + PartialOrd> {
 
+    /// Returns `true` if `date` is a holiday.
     fn is_holiday(&self, date: T) -> bool;
 
     fn is_bday(&self, date: T) -> bool {
@@ -72,47 +122,6 @@ pub trait HolidayCalendar<T: Datelike + Copy + PartialOrd> {
         }
 
         bdays_count
-    }
-}
-
-fn next_date<T: Datelike + Copy>(date: T, fwd: bool) -> T {
-    let inc: i32 = {
-        if fwd {
-            1
-        } else {
-            -1
-        }
-    };
-
-    match date.with_ordinal((date.ordinal() as i32 + inc) as u32) {
-        Some(dt) => dt,
-        None =>  {
-            if fwd {
-                date
-                    .with_year(date.year() + 1).unwrap()
-                    .with_ordinal(1).unwrap()
-            } else {
-                date
-                    .with_year(date.year() - 1).unwrap()
-                    .with_month(12).unwrap()
-                    .with_day(31).unwrap()
-            }
-        }
-    }
-}
-
-pub struct WeekendsOnly;
-
-impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for WeekendsOnly {
-    fn is_holiday(&self, _date: T) -> bool {
-        false
-    }
-}
-
-pub fn is_weekend<T: Datelike + Copy>(date: T) -> bool {
-    match date.weekday() {
-        Weekday::Sat | Weekday::Sun => true,
-        _ => false
     }
 }
 
@@ -199,9 +208,3 @@ impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendar<T> for HolidayCa
         self.bdays_counter_vec[ self.row_index(d1) ] - self.bdays_counter_vec[ self.row_index(d0) ]
     }
 }
-
-pub mod easter;
-pub mod brazil;
-
-#[cfg(test)]
-mod tests;
