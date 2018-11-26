@@ -117,6 +117,7 @@ pub fn is_weekend<T: Datelike + Copy>(date: T) -> bool {
 }
 
 pub struct HolidayCalendarCache<T: Datelike + Copy + PartialOrd> {
+    is_holiday_vec: Vec<bool>,
     is_bday_vec: Vec<bool>,
     bdays_counter_vec: Vec<i32>,
     dt_min: T,
@@ -131,9 +132,11 @@ impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendarCache<T> {
         }
 
         let len = (dt_max.num_days_from_ce() - dt_min.num_days_from_ce() + 1) as usize;
+        let mut is_holiday_vec: Vec<bool> = Vec::with_capacity(len);
         let mut is_bday_vec: Vec<bool> = Vec::with_capacity(len);
         let mut bdays_counter_vec: Vec<i32> = Vec::with_capacity(len);
 
+        is_holiday_vec.push(calendar.is_holiday(dt_min));
         is_bday_vec.push(calendar.is_bday(dt_min));
 
         let mut bdays_counter = 0;
@@ -143,6 +146,7 @@ impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendarCache<T> {
         for _i in 1..len {
             let dt_is_bday = calendar.is_bday(dt);
             is_bday_vec.push(dt_is_bday);
+            is_holiday_vec.push(calendar.is_holiday(dt));
 
             if dt_is_bday {
                 bdays_counter += 1;
@@ -154,8 +158,10 @@ impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendarCache<T> {
 
         // lengths must match
         debug_assert_eq!(is_bday_vec.len(), bdays_counter_vec.len());
+        debug_assert_eq!(is_holiday_vec.len(), bdays_counter_vec.len());
 
         HolidayCalendarCache{
+            is_holiday_vec,
             is_bday_vec,
             bdays_counter_vec,
             dt_min,
@@ -178,7 +184,7 @@ impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendar<T> for HolidayCa
 
     fn is_holiday(&self, date: T) -> bool {
         self.assert_in_bounds(date);
-        !self.is_bday_vec[ self.row_index(date) ]
+        self.is_holiday_vec[ self.row_index(date) ]
     }
 
     fn is_bday(&self, date: T) -> bool {

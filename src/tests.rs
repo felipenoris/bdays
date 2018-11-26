@@ -362,7 +362,7 @@ fn test_holiday_calendar_cache() {
     let mut dt = d0;
     while dt <= d1 {
         assert_eq!(cached_cal.is_bday(dt), uncached_cal.is_bday(dt));
-        assert_eq!(!cached_cal.is_holiday(dt), uncached_cal.is_bday(dt));
+        assert_eq!(cached_cal.is_holiday(dt), uncached_cal.is_holiday(dt));
         dt = NaiveDate::from_num_days_from_ce(dt.num_days_from_ce() + 1);
     }
 
