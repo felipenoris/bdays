@@ -46,6 +46,7 @@
 //!
 //! // returns the number of business days between dates
 //! assert_eq!( cal.bdays(d0, d2), 2);
+//! assert_eq!( cal.bdays(d2, d0), -2);
 //! ```
 //!
 //! # HolidayCalendarCache
