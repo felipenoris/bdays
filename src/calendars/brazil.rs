@@ -3,7 +3,8 @@ use chrono::Datelike;
 use HolidayCalendar;
 use easter;
 
-/// Brazilian banking holidays
+/// Brazilian banking holidays.
+/// This calendar is defined by brazilian federal holidays plus Carnival.
 pub struct BRSettlement;
 
 impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for BRSettlement {

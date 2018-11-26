@@ -9,7 +9,7 @@
 //!
 //! # Provided Holiday Calendars
 //!
-//! This crate provides a set of built in holiday calendars in the `bdays::calendars` submodule.
+//! This crate provides a set of built-in holiday calendars in the `bdays::calendars` submodule.
 //!
 //! * `bdays::calendars::WeekendsOnly` : accounts only weekends
 //! * `bdays::calendars::brazil::BRSettlement` : Brazilian banking holidays
@@ -19,6 +19,7 @@
 //! ```rust
 //! extern crate bdays;
 //! extern crate chrono;
+//!
 //! use chrono::NaiveDate;
 //! use bdays::HolidayCalendar;
 //!
@@ -33,19 +34,19 @@
 //! assert_eq!( cal.is_holiday(d0), false );
 //!
 //! // checks if a date is a business day
-//! assert_eq!( cal.is_bday(d0), true);
-//! assert_eq!( cal.is_bday(d1), false);
+//! assert_eq!( cal.is_bday(d0), true  );
+//! assert_eq!( cal.is_bday(d1), false );
 //!
 //! // adjusts to the last/next businessdays
-//! assert_eq!(cal.to_bday(d1, false), NaiveDate::from_ymd(2018, 11, 23));
-//! assert_eq!(cal.to_bday(d1, true), d2);
+//! assert_eq!( cal.to_bday(d1, false), NaiveDate::from_ymd(2018, 11, 23) );
+//! assert_eq!( cal.to_bday(d1, true) , d2 );
 //!
 //! // advances a number of business days
-//! assert_eq!(cal.advance_bdays(d0, 2), d2);
-//! assert_eq!(cal.advance_bdays(d2, -2), d0);
+//! assert_eq!( cal.advance_bdays(d0,  2), d2 );
+//! assert_eq!( cal.advance_bdays(d2, -2), d0 );
 //!
 //! // returns the number of business days between dates
-//! assert_eq!( cal.bdays(d0, d2), 2);
+//! assert_eq!( cal.bdays(d0, d2),  2);
 //! assert_eq!( cal.bdays(d2, d0), -2);
 //! ```
 //!
@@ -56,6 +57,7 @@
 //! ```rust
 //! extern crate bdays;
 //! extern crate chrono;
+//!
 //! use chrono::NaiveDate;
 //! use bdays::HolidayCalendar;
 //!
@@ -74,10 +76,16 @@
 //! ```rust
 //! extern crate bdays;
 //! extern crate chrono;
+//!
 //! use chrono::NaiveDate;
 //! use bdays::HolidayCalendar;
 //!
-//! let cal = bdays::HolidayCalendarCache::new(bdays::calendars::brazil::BRSettlement, NaiveDate::from_ymd(1980, 1, 1), NaiveDate::from_ymd(2100, 12, 31));
+//! let cal = bdays::HolidayCalendarCache::new(
+//!     bdays::calendars::brazil::BRSettlement,
+//!     NaiveDate::from_ymd(1980, 1, 1),
+//!     NaiveDate::from_ymd(2100, 12, 31)
+//! );
+//!
 //! let d0 = NaiveDate::from_ymd(2001, 2, 1);
 //! let d1 = NaiveDate::from_ymd(2100, 2, 1);
 //!

@@ -36,11 +36,7 @@ fn test_weekend() {
     assert!(super::is_weekend(NaiveDate::from_ymd(2018, 12, 02)));
 }
 
-#[test]
-fn test_weekend_calendar() {
-
-    let cal = calendars::WeekendsOnly;
-
+fn weekend_calendar_tests<H: HolidayCalendar<NaiveDate>>(cal: H) {
     {
         let dt = NaiveDate::from_ymd(2018, 11, 23);
         assert_eq!(cal.is_bday(dt), true);
@@ -60,6 +56,20 @@ fn test_weekend_calendar() {
         let dt = NaiveDate::from_ymd(2018, 11, 26);
         assert_eq!(cal.is_bday(dt), true)
     }
+}
+
+#[test]
+fn test_weekend_calendar_no_cache() {
+    let cal = calendars::WeekendsOnly;
+    weekend_calendar_tests(cal);
+}
+
+#[test]
+fn test_weekend_calendar_cached() {
+    let dt_min = NaiveDate::from_ymd(2018, 1, 1);
+    let dt_max = NaiveDate::from_ymd(2019, 1, 1);
+    let cal = HolidayCalendarCache::new(calendars::WeekendsOnly, dt_min, dt_max);
+    weekend_calendar_tests(cal);
 }
 
 #[test]
@@ -256,10 +266,8 @@ fn test_easter() {
     assert_eq!(easter::easter_naive_date(2078).unwrap(), NaiveDate::from_ymd(2078, 04, 03));
 }
 
-#[test]
-fn test_br_settlement() {
+fn br_settlement_tests<H: HolidayCalendar<NaiveDate>>(cal: H) {
     // Brazil HolidayCalendar tests
-    let cal = calendars::brazil::BRSettlement;
 
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2014, 12, 31)), true); // wednesday
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2015, 01, 01)), false); // new year
@@ -307,6 +315,20 @@ fn test_br_settlement() {
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 05, 29)), true); // wednesday
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 05, 30)), false); // Corpus Christi
     assert_eq!(cal.is_bday(NaiveDate::from_ymd(2013, 05, 31)), true); // friday
+}
+
+#[test]
+fn test_br_settlement_no_cache() {
+    let cal = calendars::brazil::BRSettlement;
+    br_settlement_tests(cal);
+}
+
+#[test]
+fn test_br_settlement_cached() {
+    let d0 = NaiveDate::from_ymd(2010, 1, 1);
+    let d1 = NaiveDate::from_ymd(2017, 1, 1);
+    let cal = HolidayCalendarCache::new(calendars::brazil::BRSettlement, d0, d1);
+    br_settlement_tests(cal);
 }
 
 #[test]
@@ -445,4 +467,87 @@ fn test_holiday_calendar_cache_bdays_panic_2() {
     let d1 = NaiveDate::from_ymd(2100, 12, 31);
     let cached_cal = HolidayCalendarCache::new(calendars::brazil::BRSettlement, d0, d1);
     cached_cal.bdays(NaiveDate::from_ymd(1970, 1, 1), NaiveDate::from_ymd(2000, 1, 1));
+}
+
+fn us_settlement_tests<H: HolidayCalendar<NaiveDate>>(us: H) {
+    // Federal Holidays listed on https://www.opm.gov/policy-data-oversight/snow-dismissal-procedures/federal-holidays/#url=2015
+
+    assert!(us.is_bday(NaiveDate::from_ymd(2014, 12, 31)));
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 1, 1))); // New Year's Day - Thursday
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 1, 2)));
+
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 1, 18)));
+    assert!(!us.is_holiday(NaiveDate::from_ymd(2015, 1, 18))); // Sunday
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 1, 19))); // Birthday of Martin Luther King, Jr. - Monday
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 1, 20)));
+
+    assert!(us.is_bday(NaiveDate::from_ymd(1982, 1, 18))); // not a holiday for Martin Luther King
+
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 2, 15)));
+    assert!(!us.is_holiday(NaiveDate::from_ymd(2015, 2, 15))); // Sunday
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 2, 16))); // Washington’s Birthday - Monday
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 2, 17)));
+
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 5, 24)));
+    assert!(!us.is_holiday(NaiveDate::from_ymd(2015, 5, 24))); // Sunday
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 5, 25))); // Memorial Day - Monday
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 5, 26)));
+
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 7, 2)));
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 7, 3))); // Independence Day - Friday
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 7, 4)));
+    assert!(!us.is_holiday(NaiveDate::from_ymd(2015, 7, 4))); // Saturday
+
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 9, 6)));
+    assert!(!us.is_holiday(NaiveDate::from_ymd(2015, 9, 6))); // Sunday
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 9, 7))); // Labor Day - Monday
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 9, 8)));
+
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 10, 11)));
+    assert!(!us.is_holiday(NaiveDate::from_ymd(2015, 10, 11))); // Sunday
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 10, 12))); // Columbus Day - Monday
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 10, 13)));
+
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 11, 10)));
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 11, 11))); // Veterans Day - Wednesday
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 11, 12)));
+
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 11, 25)));
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 11, 26))); // Thanksgiving Day - Thursday
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 11, 27)));
+
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 11, 25)));
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 11, 26))); // Thanksgiving Day - Thursday
+    assert!(us.is_holiday(NaiveDate::from_ymd(2015, 11, 26)));
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 11, 27)));
+
+    assert!(us.is_bday(NaiveDate::from_ymd(2015, 12, 24)));
+    assert!(us.is_holiday(NaiveDate::from_ymd(2015, 12, 25))); // Christmas - Friday
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 12, 25))); // Christmas - Friday
+    assert!(!us.is_holiday(NaiveDate::from_ymd(2015, 12, 26)));
+    assert!(!us.is_bday(NaiveDate::from_ymd(2015, 12, 26))); // Saturday
+
+    assert!(us.is_holiday(NaiveDate::from_ymd(2010, 12, 31))); // new years day observed
+    assert!(!us.is_bday(NaiveDate::from_ymd(2010, 12, 31))); // new years day observed
+    assert!(us.is_holiday(NaiveDate::from_ymd(2004, 12, 31))); // new years day observed
+    assert!(!us.is_bday(NaiveDate::from_ymd(2004, 12, 31))); // new years day observed
+
+    assert!(us.is_bday(NaiveDate::from_ymd(2013, 3, 28)));
+    assert!(us.is_bday(NaiveDate::from_ymd(2013, 3, 29))); // good friday
+    assert!(!us.is_bday(NaiveDate::from_ymd(2013, 3, 30)));
+    assert!(!us.is_holiday(NaiveDate::from_ymd(2013, 3, 30)));
+}
+
+#[test]
+fn test_us_settlement_no_cache() {
+    let us = calendars::us::USSettlement;
+    us_settlement_tests(us);
+}
+
+#[test]
+fn test_us_settlement_cached() {
+    let d0 = NaiveDate::from_ymd(1980, 1, 1);
+    let d1 = NaiveDate::from_ymd(2018, 1, 1);
+    let cal = HolidayCalendarCache::new(calendars::us::USSettlement, d0, d1);
+    us_settlement_tests(cal);
 }
