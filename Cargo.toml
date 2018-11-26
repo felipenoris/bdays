@@ -2,6 +2,14 @@
 name = "bdays"
 version = "0.1.0"
 authors = ["Felipe Noronha <felipenoris@gmail.com>"]
+license = "MIT"
+description = "Business Days calendars for Rustaceans."
+homepage = "https://github.com/felipenoris/bdays"
+documentation = "https://docs.rs/bdays"
+repository = "https://github.com/felipenoris/bdays"
+keywords = ["date", "calendar"]
+categories = ["date-and-time", "finance"]
+readme = "README.md"
 
 [dependencies]
 chrono = "0.4.6"
