@@ -8,7 +8,7 @@ homepage = "https://github.com/felipenoris/bdays"
 documentation = "https://docs.rs/bdays"
 repository = "https://github.com/felipenoris/bdays"
 keywords = ["date", "calendar"]
-categories = ["date-and-time", "finance"]
+categories = ["date-and-time"]
 readme = "README.md"
 
 [dependencies]
