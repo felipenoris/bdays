@@ -3,6 +3,7 @@ use chrono::{Datelike, NaiveDate};
 use std::fmt;
 use std::error;
 
+/// Error type for easter calculation functions.
 #[derive(Debug, Clone)]
 pub struct EasterError {
     y: i32
@@ -28,6 +29,8 @@ impl fmt::Display for EasterError {
 
 impl error::Error for EasterError {}
 
+/// Returns easter date for year `y`
+/// as the number of days since January 1, Year 1 (aka Day 1) in the proleptic Gregorian calendar.
 pub fn easter_num_days_from_ce(y: i32) -> Result<i32, EasterError> {
     // Algo R only works after 1582
     if y < 1582 {
@@ -52,6 +55,8 @@ pub fn easter_num_days_from_ce(y: i32) -> Result<i32, EasterError> {
     Ok(p + 7 - (p % 7))
 }
 
+/// Returns easter date for year `y`
+/// as a `chrono::NaiveDate`.
 pub fn easter_naive_date(y: i32) -> Result<NaiveDate, EasterError> {
     let rata = easter_num_days_from_ce(y)?;
 
