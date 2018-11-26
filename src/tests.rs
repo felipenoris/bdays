@@ -395,4 +395,5 @@ fn test_holiday_calendar_cache() {
     assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 13)), 3);
     assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 06), NaiveDate::from_ymd(2013, 02, 14)), 4);
     assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 14), NaiveDate::from_ymd(2013, 02, 06)), -4);
+    assert_eq!(cached_cal.bdays(d0, d1), uncached_cal.bdays(d0, d1));
 }
