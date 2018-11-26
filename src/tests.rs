@@ -397,3 +397,30 @@ fn test_holiday_calendar_cache() {
     assert_eq!(cached_cal.bdays(NaiveDate::from_ymd(2013, 02, 14), NaiveDate::from_ymd(2013, 02, 06)), -4);
     assert_eq!(cached_cal.bdays(d0, d1), uncached_cal.bdays(d0, d1));
 }
+
+#[test]
+#[should_panic(expected="out of bounds of holiday calendar cache")]
+fn test_holiday_calendar_cache_is_bday_panic() {
+    let d0 = NaiveDate::from_ymd(1980, 1, 1);
+    let d1 = NaiveDate::from_ymd(2100, 12, 31);
+    let cached_cal = HolidayCalendarCache::new(brazil::BRSettlement, d0, d1);
+    cached_cal.is_bday(NaiveDate::from_ymd(2101, 1, 1));
+}
+
+#[test]
+#[should_panic(expected="out of bounds of holiday calendar cache")]
+fn test_holiday_calendar_cache_bdays_panic_1() {
+    let d0 = NaiveDate::from_ymd(1980, 1, 1);
+    let d1 = NaiveDate::from_ymd(2100, 12, 31);
+    let cached_cal = HolidayCalendarCache::new(brazil::BRSettlement, d0, d1);
+    cached_cal.bdays(NaiveDate::from_ymd(2000, 1, 1), NaiveDate::from_ymd(2101, 1, 1));
+}
+
+#[test]
+#[should_panic(expected="out of bounds of holiday calendar cache")]
+fn test_holiday_calendar_cache_bdays_panic_2() {
+    let d0 = NaiveDate::from_ymd(1980, 1, 1);
+    let d1 = NaiveDate::from_ymd(2100, 12, 31);
+    let cached_cal = HolidayCalendarCache::new(brazil::BRSettlement, d0, d1);
+    cached_cal.bdays(NaiveDate::from_ymd(1970, 1, 1), NaiveDate::from_ymd(2000, 1, 1));
+}

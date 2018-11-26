@@ -152,9 +152,8 @@ impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendarCache<T> {
             dt = next_date(dt, true);
         }
 
-        if is_bday_vec.len() != bdays_counter_vec.len() {
-            panic!("lengths must match.");
-        }
+        // lengths must match
+        debug_assert_eq!(is_bday_vec.len(), bdays_counter_vec.len());
 
         HolidayCalendarCache{
             is_bday_vec,
