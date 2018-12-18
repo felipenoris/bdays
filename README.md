@@ -31,6 +31,10 @@ This crate provides a set of built-in holiday calendars in the `bdays::calendars
 
 * `bdays::calendars::brazil::BRSettlement` : Brazilian banking holidays
 
+* `bdays::calendars::brazil::BrazilExchange` : BMF&BOVESPA Exchange holidays (http://www.bmfbovespa.com.br)
+
+* `bdays::calendars::us::USSettlement` : United States federal holidays
+
 ## Usage
 
 ```rust

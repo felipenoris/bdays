@@ -3,6 +3,7 @@ use chrono::{Datelike, Weekday, NaiveDate, Duration};
 use HolidayCalendar;
 use easter;
 
+/// United States federal holidays.
 pub struct USSettlement;
 
 fn end_of_month(mut yy: i32, mut mm: u32) -> NaiveDate {

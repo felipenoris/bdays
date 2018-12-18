@@ -551,3 +551,16 @@ fn test_us_settlement_cached() {
     let cal = HolidayCalendarCache::new(calendars::us::USSettlement, d0, d1);
     us_settlement_tests(cal);
 }
+
+#[test]
+fn test_brazil_exchange() {
+    let cal = calendars::brazil::BrazilExchange;
+
+    assert!(!cal.is_bday(NaiveDate::from_ymd(2017, 11, 19))); // Sunday
+    assert!(!cal.is_bday(NaiveDate::from_ymd(2017, 11, 20))); //Conciência Negra (segunda)
+    assert!(cal.is_bday(NaiveDate::from_ymd(2017, 11, 21))); // Tuesday
+
+    assert!(cal.is_bday(NaiveDate::from_ymd(2013, 5, 29))); // wednesday
+    assert!(!cal.is_bday(NaiveDate::from_ymd(2013, 5, 30))); // Corpus Christi (National Holiday)
+    assert!(cal.is_bday(NaiveDate::from_ymd(2013, 5, 31))); // friday
+}
