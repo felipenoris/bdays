@@ -1,7 +1,6 @@
 
-use chrono::{Datelike, Weekday, NaiveDate, Duration};
-use HolidayCalendar;
-use easter;
+use ::chrono::{Datelike, Weekday, NaiveDate, Duration};
+use crate::HolidayCalendar;
 
 /// United States federal holidays.
 pub struct USSettlement;

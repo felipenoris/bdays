@@ -19,9 +19,6 @@
 //! # Usage
 //!
 //! ```rust
-//! extern crate bdays;
-//! extern crate chrono;
-//!
 //! use chrono::NaiveDate;
 //! use bdays::HolidayCalendar;
 //!
@@ -57,9 +54,6 @@
 //! As a motivation, this example might take some time to finish.
 //!
 //! ```rust
-//! extern crate bdays;
-//! extern crate chrono;
-//!
 //! use chrono::NaiveDate;
 //! use bdays::HolidayCalendar;
 //!
@@ -76,9 +70,6 @@
 //! for a given range of dates.
 //!
 //! ```rust
-//! extern crate bdays;
-//! extern crate chrono;
-//!
 //! use chrono::NaiveDate;
 //! use bdays::HolidayCalendar;
 //!
@@ -96,11 +87,10 @@
 //! }
 //! ```
 
-extern crate chrono;
-
-use std::fmt::Display;
 use chrono::Datelike;
 use chrono::Weekday;
+
+use std::fmt::Display;
 use std::cmp::PartialOrd;
 
 /// Algorithms to calculate easter dates.

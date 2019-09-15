@@ -1,6 +1,6 @@
 
-use HolidayCalendar;
-use chrono::Datelike;
+use crate::HolidayCalendar;
+use ::chrono::Datelike;
 
 /// Holiday Calendars for Brazil.
 pub mod brazil;

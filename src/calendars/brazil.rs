@@ -1,7 +1,7 @@
 
-use chrono::{Datelike, Weekday};
-use HolidayCalendar;
-use easter;
+use ::chrono::{Datelike, Weekday};
+use crate::HolidayCalendar;
+use crate::easter;
 
 /// Brazilian banking holidays.
 /// This calendar is defined by brazilian federal holidays plus Carnival.

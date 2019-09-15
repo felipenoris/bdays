@@ -1,24 +1,25 @@
 [package]
 name = "bdays"
-version = "0.0.2"
+version = "0.1.0"
 authors = ["Felipe Noronha <felipenoris@gmail.com>"]
 license = "MIT"
 description = "Business Days calendars for Rustaceans."
 homepage = "https://github.com/felipenoris/bdays"
 documentation = "https://docs.rs/bdays"
 repository = "https://github.com/felipenoris/bdays"
-keywords = ["date", "calendar"]
+keywords = ["date", "calendar", "finance"]
 categories = ["date-and-time"]
 readme = "README.md"
+edition = "2018"
 
 [badges]
 travis-ci = { repository = "felipenoris/bdays" }
 
 [dependencies]
-chrono = "0.4.6"
+chrono = "0.4"
 
 [dev-dependencies]
-bencher = "0.1.5"
+bencher = "0.1"
 
 [[bench]]
 name = "bench"
