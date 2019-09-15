@@ -37,6 +37,7 @@ fn test_weekend() {
 }
 
 fn weekend_calendar_tests<H: HolidayCalendar<NaiveDate>>(cal: H) {
+
     {
         let dt = NaiveDate::from_ymd(2018, 11, 23);
         assert_eq!(cal.is_bday(dt), true);
@@ -69,6 +70,27 @@ fn weekend_calendar_tests<H: HolidayCalendar<NaiveDate>>(cal: H) {
         let d1 = NaiveDate::from_ymd(2019, 9, 2);
         assert_eq!(cal.bdays(d0, d1), 5);
         assert_eq!(cal.bdays(d1, d0), -5);
+    }
+
+    {
+        let d0 = NaiveDate::from_ymd(2019, 8, 26);
+        let d1 = NaiveDate::from_ymd(2019, 9, 3);
+        assert_eq!(cal.bdays(d0, d1), 6);
+        assert_eq!(cal.bdays(d1, d0), -6);
+    }
+
+    {
+        let d0 = NaiveDate::from_ymd(2019, 8, 26);
+        let d1 = NaiveDate::from_ymd(2019, 9, 9);
+        assert_eq!(cal.bdays(d0, d1), 10);
+        assert_eq!(cal.bdays(d1, d0), -10);
+    }
+
+    {
+        let d0 = NaiveDate::from_ymd(2019, 8, 26);
+        let d1 = NaiveDate::from_ymd(2019, 9, 10);
+        assert_eq!(cal.bdays(d0, d1), 11);
+        assert_eq!(cal.bdays(d1, d0), -11);
     }
 
     {
