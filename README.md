@@ -38,9 +38,6 @@ This crate provides a set of built-in holiday calendars in the `bdays::calendars
 ## Usage
 
 ```rust
-extern crate bdays;
-extern crate chrono;
-
 use chrono::NaiveDate;
 use bdays::HolidayCalendar;
 
@@ -92,9 +89,6 @@ You can use `HolidayCalendarCache` to perform fast business days calculation
 for a given range of dates.
 
 ```rust
-extern crate bdays;
-extern crate chrono;
-
 use chrono::NaiveDate;
 use bdays::HolidayCalendar;
 
