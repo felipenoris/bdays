@@ -80,7 +80,7 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for BRSettlement {
     }
 }
 
-/// BMF&BOVESPA Exchange holidays (http://www.bmfbovespa.com.br).
+/// B3 Exchange holidays (http://www.b3.com.br).
 pub struct BrazilExchange;
 
 impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for BrazilExchange {
