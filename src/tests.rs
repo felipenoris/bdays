@@ -654,4 +654,35 @@ fn test_brazil_exchange() {
     assert!(cal.is_bday(NaiveDate::from_ymd(2013, 5, 29))); // wednesday
     assert!(!cal.is_bday(NaiveDate::from_ymd(2013, 5, 30))); // Corpus Christi (National Holiday)
     assert!(cal.is_bday(NaiveDate::from_ymd(2013, 5, 31))); // friday
+
+    // BrazilExchange 2019 calendar
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 01, 01)) == false ); // Confraternização Universal
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 03, 04)) == false ); // Carnaval
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 03, 05)) == false ); // Carnaval
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 04, 19)) == false ); // Paixão de Cristo
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 05, 01)) == false ); // Dia do Trabalho
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 06, 20)) == false ); // Corpus Christi
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 11, 15)) == false ); // Proclamação da República
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 12, 24)) == false ); // Véspera de Natal
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 12, 25)) == false ); // Natal
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 12, 31)) == false ); // bank holiday
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 01, 25)) == false ); // Aniversário de São Paulo
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 07, 09)) == false ); // Revolução Constitucionalista
+    assert!( cal.is_bday(NaiveDate::from_ymd(2019, 11, 20)) == false ); // Dia da Consciência Negra
+
+    // BrazilExchange 2020 calendar
+    assert!( cal.is_bday(NaiveDate::from_ymd(2020, 05, 20)) == true );
+    assert!( cal.is_bday(NaiveDate::from_ymd(2020, 05, 21)) == true );
+    assert!( cal.is_bday(NaiveDate::from_ymd(2020, 05, 22)) == true );
+    assert!( cal.is_bday(NaiveDate::from_ymd(2020, 05, 25)) == true );
+    assert!( cal.is_bday(NaiveDate::from_ymd(2020, 06, 11)) == false );
+    assert!( cal.is_bday(NaiveDate::from_ymd(2020, 07, 09)) == true ); // 2020 update by Ofício Circular 072/2020-PRE
+    assert!( cal.is_bday(NaiveDate::from_ymd(2020, 11, 20)) == true ); // 2020 update by Ofício Circular 072/2020-PRE
+
+    // BrazilExchange 2021 calendar
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2021, 1, 25)) == true );
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2021, 7, 9)) == true );
+
+    // BrazilExchange 2022 calendar
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 1, 25)) == false ); // updated by Ofício Circular 150/2020-PRE
 }

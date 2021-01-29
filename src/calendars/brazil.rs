@@ -91,13 +91,13 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for BrazilExchange {
 
         if
             // Aniversário de São Paulo
-            ( mm == 1 && dd == 25 )
+            ( mm == 1 && dd == 25 && yy != 2022 )
             ||
             // Revolucão
-            ( mm == 7 && dd == 9 )
+            ( mm == 7 && dd == 9 && yy != 2020 )
             ||
-            // Conciência Negra (a partir de 2007)
-            ( yy >= 2007 && mm == 11 && dd == 20 )
+            // Consciência Negra (since 2007)
+            ( yy >= 2007 && mm == 11 && dd == 20 && yy != 2020 )
             // Christmas Eve
             ||
             ( mm == 12 && dd == 24)
