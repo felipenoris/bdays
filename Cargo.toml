@@ -16,7 +16,7 @@ edition = "2018"
 travis-ci = { repository = "felipenoris/bdays" }
 
 [dependencies]
-chrono = "0.4"
+chrono = { version = "0.4", default-features = false }
 
 [dev-dependencies]
 bencher = "0.1"
