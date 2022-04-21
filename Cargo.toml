@@ -12,9 +12,6 @@ categories = ["date-and-time"]
 readme = "README.md"
 edition = "2018"
 
-[badges]
-travis-ci = { repository = "felipenoris/bdays" }
-
 [dependencies]
 chrono = { version = "0.4", default-features = false }
 
