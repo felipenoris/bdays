@@ -1,21 +1,20 @@
-
-use ::chrono::{Datelike, Weekday};
-use crate::HolidayCalendar;
 use crate::easter;
+use crate::HolidayCalendar;
+use ::chrono::{Datelike, Weekday};
 
 /// Brazilian banking holidays.
 /// This calendar is defined by brazilian federal holidays plus Carnival.
 pub struct BRSettlement;
 
 fn is_brazilian_national_holiday<T: Datelike + Copy + PartialOrd>(date: T) -> bool {
-
     let (yy, mm, dd) = (date.year(), date.month(), date.day());
 
     // Bisection
     if mm >= 8 {
         // Fixed holidays
-        if  // Independencia do Brasil
-            ((mm == 9) && (dd == 7))
+        if
+        // Independencia do Brasil
+        ((mm == 9) && (dd == 7))
             ||
             // Nossa Senhora Aparecida
             ((mm == 10) && (dd == 12))
@@ -28,16 +27,15 @@ fn is_brazilian_national_holiday<T: Datelike + Copy + PartialOrd>(date: T) -> bo
             ||
             // Natal
             ((mm == 12) && (dd == 25))
-
         {
-            return true
+            return true;
         }
     } else {
         // mm < 8
         // Fixed holidays
         if
-            // Confraternizacao Universal
-            ((mm == 1) && (dd == 1))
+        // Confraternizacao Universal
+        ((mm == 1) && (dd == 1))
             ||
             // Tiradentes
             ((mm == 4) && (dd == 21))
@@ -45,7 +43,7 @@ fn is_brazilian_national_holiday<T: Datelike + Copy + PartialOrd>(date: T) -> bo
             // Dia do Trabalho
             ((mm == 5) && (dd == 1))
         {
-            return true
+            return true;
         }
 
         // Easter occurs up to April, so Corpus Christi will be up to July in the worst case, which is before August (mm < 8).
@@ -54,8 +52,8 @@ fn is_brazilian_national_holiday<T: Datelike + Copy + PartialOrd>(date: T) -> bo
         let e_rata = easter::easter_num_days_from_ce(yy).unwrap();
 
         if
-            // Segunda de Carnaval
-            ( dt_rata == ( e_rata - 48 ) )
+        // Segunda de Carnaval
+        ( dt_rata == ( e_rata - 48 ) )
             ||
             // Terca de Carnaval
             ( dt_rata == ( e_rata - 47 ) )
@@ -66,7 +64,7 @@ fn is_brazilian_national_holiday<T: Datelike + Copy + PartialOrd>(date: T) -> bo
             // Corpus Christi
             ( dt_rata == ( e_rata + 60 ) )
         {
-            return true
+            return true;
         }
     }
 
@@ -74,7 +72,6 @@ fn is_brazilian_national_holiday<T: Datelike + Copy + PartialOrd>(date: T) -> bo
 }
 
 impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for BRSettlement {
-
     fn is_holiday(&self, date: T) -> bool {
         is_brazilian_national_holiday(date)
     }
@@ -84,14 +81,12 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for BRSettlement {
 pub struct BrazilExchange;
 
 impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for BrazilExchange {
-
     fn is_holiday(&self, date: T) -> bool {
-
         let (yy, mm, dd) = (date.year(), date.month(), date.day());
 
         if
-            // Aniversário de São Paulo
-            ( mm == 1 && dd == 25 && yy < 2022 )
+        // Aniversário de São Paulo
+        ( mm == 1 && dd == 25 && yy < 2022 )
             ||
             // Revolucão
             ( mm == 7 && dd == 9 && yy != 2020 && yy < 2022 )

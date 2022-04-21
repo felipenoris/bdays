@@ -1,4 +1,3 @@
-
 //! Provides functions to perform business days calculation between dates,
 //! given a Holiday Calendar.
 //!
@@ -90,8 +89,8 @@
 use chrono::Datelike;
 use chrono::Weekday;
 
-use std::fmt::Display;
 use std::cmp::PartialOrd;
+use std::fmt::Display;
 
 /// Algorithms to calculate easter dates.
 pub mod easter;
@@ -123,16 +122,19 @@ fn next_date<T: Datelike + Copy>(date: T, fwd: bool) -> T {
 
     match date.with_ordinal((date.ordinal() as i32 + inc) as u32) {
         Some(dt) => dt,
-        None =>  {
+        None => {
             if fwd {
-                date
-                    .with_year(date.year() + 1).unwrap()
-                    .with_ordinal(1).unwrap()
+                date.with_year(date.year() + 1)
+                    .unwrap()
+                    .with_ordinal(1)
+                    .unwrap()
             } else {
-                date
-                    .with_year(date.year() - 1).unwrap()
-                    .with_month(12).unwrap()
-                    .with_day(31).unwrap()
+                date.with_year(date.year() - 1)
+                    .unwrap()
+                    .with_month(12)
+                    .unwrap()
+                    .with_day(31)
+                    .unwrap()
             }
         }
     }
@@ -140,7 +142,6 @@ fn next_date<T: Datelike + Copy>(date: T, fwd: bool) -> T {
 
 /// Abstraction for a Holiday Calendar.
 pub trait HolidayCalendar<T: Datelike + Copy + PartialOrd> {
-
     /// Returns `true` if `date` is a holiday.
     fn is_holiday(&self, date: T) -> bool;
 
@@ -164,8 +165,8 @@ pub trait HolidayCalendar<T: Datelike + Copy + PartialOrd> {
 
         let inc_fwd = match bdays_count.signum() {
             0 => return date, // nothing to do
-            1 => true, // bdays_count is positive
-            -1 => false, // bdays_count is negative
+            1 => true,        // bdays_count is positive
+            -1 => false,      // bdays_count is negative
             _ => panic!("signum function is expected to return 0, 1 or -1."),
         };
 
@@ -225,12 +226,18 @@ pub struct HolidayCalendarCache<T: Datelike + Copy + PartialOrd> {
 }
 
 impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendarCache<T> {
-
     /// Creates `HolidayCalendarCache` that caches business days calculation
     /// in the range of dates from `dt_min` to `dt_max`.
-    pub fn new<H: HolidayCalendar<T>>(calendar: H, dt_min: T, dt_max: T) -> HolidayCalendarCache<T> {
+    pub fn new<H: HolidayCalendar<T>>(
+        calendar: H,
+        dt_min: T,
+        dt_max: T,
+    ) -> HolidayCalendarCache<T> {
         if dt_min > dt_max {
-            panic!("dt_min {} should not be greater than dt_max {}.", dt_min, dt_max);
+            panic!(
+                "dt_min {} should not be greater than dt_max {}.",
+                dt_min, dt_max
+            );
         }
 
         let len = (dt_max.num_days_from_ce() - dt_min.num_days_from_ce() + 1) as usize;
@@ -262,7 +269,7 @@ impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendarCache<T> {
         debug_assert_eq!(is_bday_vec.len(), bdays_counter_vec.len());
         debug_assert_eq!(is_holiday_vec.len(), bdays_counter_vec.len());
 
-        HolidayCalendarCache{
+        HolidayCalendarCache {
             is_holiday_vec,
             is_bday_vec,
             bdays_counter_vec,
@@ -277,27 +284,29 @@ impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendarCache<T> {
 
     fn assert_in_bounds(&self, date: T) {
         if date < self.dt_min || self.dt_max < date {
-            panic!("Date {} out of bounds of holiday calendar cache. [{}, {}].", date, self.dt_min, self.dt_max);
+            panic!(
+                "Date {} out of bounds of holiday calendar cache. [{}, {}].",
+                date, self.dt_min, self.dt_max
+            );
         }
     }
 }
 
 impl<T: Datelike + Copy + PartialOrd + Display> HolidayCalendar<T> for HolidayCalendarCache<T> {
-
     fn is_holiday(&self, date: T) -> bool {
         self.assert_in_bounds(date);
-        self.is_holiday_vec[ self.row_index(date) ]
+        self.is_holiday_vec[self.row_index(date)]
     }
 
     fn is_bday(&self, date: T) -> bool {
         self.assert_in_bounds(date);
-        self.is_bday_vec[ self.row_index(date) ]
+        self.is_bday_vec[self.row_index(date)]
     }
 
     fn bdays(&self, mut d0: T, mut d1: T) -> i32 {
         d0 = self.to_bday(d0, true);
         d1 = self.to_bday(d1, true);
 
-        self.bdays_counter_vec[ self.row_index(d1) ] - self.bdays_counter_vec[ self.row_index(d0) ]
+        self.bdays_counter_vec[self.row_index(d1)] - self.bdays_counter_vec[self.row_index(d0)]
     }
 }

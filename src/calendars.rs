@@ -1,4 +1,3 @@
-
 use crate::HolidayCalendar;
 use ::chrono::{Datelike, NaiveDate};
 
@@ -18,11 +17,9 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for WeekendsOnly {
     }
 
     fn bdays(&self, d0: T, d1: T) -> i32 {
-
         if d0 == d1 {
             0
         } else {
-
             let from: NaiveDate;
             let to: NaiveDate;
             let swapped: bool;
@@ -42,7 +39,8 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for WeekendsOnly {
             let whole_weeks = days / 7;
             result += whole_weeks * 5;
 
-            let mut current_date = NaiveDate::from_num_days_from_ce(from.num_days_from_ce() + whole_weeks * 7);
+            let mut current_date =
+                NaiveDate::from_num_days_from_ce(from.num_days_from_ce() + whole_weeks * 7);
 
             if current_date < to {
                 let mut day_of_week = current_date.weekday();
@@ -52,7 +50,8 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for WeekendsOnly {
                         result += 1;
                     }
 
-                    current_date = NaiveDate::from_num_days_from_ce(current_date.num_days_from_ce() + 1);
+                    current_date =
+                        NaiveDate::from_num_days_from_ce(current_date.num_days_from_ce() + 1);
                     day_of_week = day_of_week.succ();
                 }
             }
