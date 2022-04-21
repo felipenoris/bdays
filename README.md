@@ -6,7 +6,7 @@
 [![docs][docs-img]][docs-url]
 [![version][version-img]][version-url]
 
-[license-img]: https://img.shields.io/crates/v/bdays.svg
+[license-img]: https://img.shields.io/crates/l/bdays.svg
 [ci-img]: https://github.com/felipenoris/bdays/workflows/CI/badge.svg
 [ci-url]: https://github.com/felipenoris/bdays/actions
 [docs-img]: https://docs.rs/bdays/badge.svg
