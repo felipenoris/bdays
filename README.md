@@ -1,18 +1,18 @@
 
 # bdays
 
-[![License][license-image]](LICENSE)
-[![bdays on Travis CI][travis-image]][travis]
-[![bdays on crates.io][cratesio-image]][cratesio]
-[![bdays on docs.rs][docsrs-image]][docsrs]
+[![License][license-img]](LICENSE)
+[![CI][ci-img]][ci-url]
+[![docs][docs-img]][docs-url]
+[![version][version-img]][version-url]
 
-[license-image]: http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat
-[travis-image]: https://travis-ci.org/felipenoris/bdays.svg?branch=master
-[travis]: https://travis-ci.org/felipenoris/bdays
-[cratesio-image]: https://img.shields.io/crates/v/bdays.svg
-[cratesio]: https://crates.io/crates/bdays
-[docsrs-image]: https://docs.rs/bdays/badge.svg
-[docsrs]: https://docs.rs/bdays
+[license-img]: https://img.shields.io/crates/v/bdays.svg
+[ci-img]: https://github.com/felipenoris/bdays/workflows/CI/badge.svg
+[ci-url]: https://github.com/felipenoris/bdays/actions
+[docs-img]: https://docs.rs/bdays/badge.svg
+[docs-url]: https://docs.rs/bdays
+[version-img]: https://img.shields.io/crates/v/bdays.svg
+[version-url]: https://crates.io/crates/bdays
 
 Provides functions to perform business days calculation between dates,
 given a Holiday Calendar.
