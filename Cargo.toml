@@ -10,7 +10,7 @@ repository = "https://github.com/felipenoris/bdays"
 keywords = ["date", "calendar", "finance"]
 categories = ["date-and-time"]
 readme = "README.md"
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 chrono = { version = "0.4", default-features = false }
