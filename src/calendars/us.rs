@@ -130,6 +130,9 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for USSettlement {
             // Memorial Day
             adjust_weekend_holidays_us(find_weekday(Weekday::Mon, yy, 5, 1, false)) == dt_naive
             ||
+            // Juneteenth
+            (yy >= 2021 && adjust_weekend_holidays_us(NaiveDate::from_ymd(yy, 6, 19)) == dt_naive )
+            ||
             // Independence Day
             adjust_weekend_holidays_us(NaiveDate::from_ymd(yy, 7, 4)) == dt_naive
             ||

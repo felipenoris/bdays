@@ -584,6 +584,11 @@ fn us_settlement_tests<H: HolidayCalendar<NaiveDate>>(us: H) {
     assert!(!us.is_bday(NaiveDate::from_ymd(2015, 5, 25))); // Memorial Day - Monday
     assert!(us.is_bday(NaiveDate::from_ymd(2015, 5, 26)));
 
+    assert!(us.is_bday(NaiveDate::from_ymd(2020, 6, 19)));
+    assert!(us.is_bday(NaiveDate::from_ymd(2021, 6, 17)));
+    assert!(!us.is_bday(NaiveDate::from_ymd(2021, 6, 18))); // Juneteenth starting 2021
+    assert!(!us.is_bday(NaiveDate::from_ymd(2022, 6, 20))); // Juneteenth 2022
+
     assert!(us.is_bday(NaiveDate::from_ymd(2015, 7, 2)));
     assert!(!us.is_bday(NaiveDate::from_ymd(2015, 7, 3))); // Independence Day - Friday
     assert!(!us.is_bday(NaiveDate::from_ymd(2015, 7, 4)));
@@ -638,7 +643,7 @@ fn test_us_settlement_no_cache() {
 #[test]
 fn test_us_settlement_cached() {
     let d0 = NaiveDate::from_ymd(1980, 1, 1);
-    let d1 = NaiveDate::from_ymd(2018, 1, 1);
+    let d1 = NaiveDate::from_ymd(2023, 1, 1);
     let cal = HolidayCalendarCache::new(calendars::us::USSettlement, d0, d1);
     us_settlement_tests(cal);
 }
