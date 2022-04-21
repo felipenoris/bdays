@@ -17,35 +17,47 @@
 //!
 //! # Usage
 //!
+//! Add these dependencies to your `Cargo.toml` file.
+//!
+//! ```toml
+//! [dependencies]
+//! bdays = "0.1"
+//! chrono = "0.4"
+//! ```
+//!
+//! The following example shows the basic functions from this package.
+//!
 //! ```rust
 //! use chrono::NaiveDate;
 //! use bdays::HolidayCalendar;
 //!
-//! // creates a holiday calendar instance
-//! let cal = bdays::calendars::WeekendsOnly;
+//! fn main() {
+//!     // creates a holiday calendar instance
+//!     let cal = bdays::calendars::WeekendsOnly;
 //!
-//! let d0 = NaiveDate::from_ymd(2018, 11, 22);
-//! let d1 = NaiveDate::from_ymd(2018, 11, 24);
-//! let d2 = NaiveDate::from_ymd(2018, 11, 26);
+//!     let d0 = NaiveDate::from_ymd(2018, 11, 22);
+//!     let d1 = NaiveDate::from_ymd(2018, 11, 24);
+//!     let d2 = NaiveDate::from_ymd(2018, 11, 26);
 //!
-//! // checks if a date is a holiday
-//! assert_eq!( cal.is_holiday(d0), false );
+//!     // checks if a date is a holiday
+//!     assert_eq!( cal.is_holiday(d0), false );
 //!
-//! // checks if a date is a business day
-//! assert_eq!( cal.is_bday(d0), true  );
-//! assert_eq!( cal.is_bday(d1), false );
+//!     // checks if a date is a business day
+//!     assert_eq!( cal.is_bday(d0), true  );
+//!     assert_eq!( cal.is_bday(d1), false );
 //!
-//! // adjusts to the last/next businessdays
-//! assert_eq!( cal.to_bday(d1, false), NaiveDate::from_ymd(2018, 11, 23) );
-//! assert_eq!( cal.to_bday(d1, true) , d2 );
+//!     // adjusts to the last/next business day
+//!     assert_eq!( cal.to_bday(d1, false), NaiveDate::from_ymd(2018, 11, 23) );
+//!     assert_eq!( cal.to_bday(d1, true) , d2 );
 //!
-//! // advances a number of business days
-//! assert_eq!( cal.advance_bdays(d0,  2), d2 );
-//! assert_eq!( cal.advance_bdays(d2, -2), d0 );
+//!     // advances a number of business days
+//!     assert_eq!( cal.advance_bdays(d0,  2), d2 );
+//!     assert_eq!( cal.advance_bdays(d2, -2), d0 );
 //!
-//! // returns the number of business days between dates
-//! assert_eq!( cal.bdays(d0, d2),  2);
-//! assert_eq!( cal.bdays(d2, d0), -2);
+//!     // returns the number of business days between dates
+//!     assert_eq!( cal.bdays(d0, d2),  2);
+//!     assert_eq!( cal.bdays(d2, d0), -2);
+//! }
 //! ```
 //!
 //! # HolidayCalendarCache
