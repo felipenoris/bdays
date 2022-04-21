@@ -685,4 +685,15 @@ fn test_brazil_exchange() {
 
     // BrazilExchange 2022 calendar
     assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 1, 25)) == false ); // updated by Ofício Circular 150/2020-PRE
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 7, 9)) == false );
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 11, 20)) == false );
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 2, 28)) == true );
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 3, 1)) == true );
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 4, 15)) == true );
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 4, 21)) == true );
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 6, 16)) == true );
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 9, 7)) == true );
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 10, 12)) == true );
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 11, 2)) == true );
+    assert!( cal.is_holiday(NaiveDate::from_ymd(2022, 11, 15)) == true );
 }
