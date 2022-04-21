@@ -104,11 +104,7 @@ mod tests;
 
 /// Returns `true` if `date` occurs on a Saturday or a Sunday.
 pub fn is_weekend<T: Datelike + Copy>(date: T) -> bool {
-    if let Weekday::Sat | Weekday::Sun = date.weekday() {
-        true
-    } else {
-        false
-    }
+    matches!(date.weekday(), Weekday::Sat | Weekday::Sun)
 }
 
 /// Returns `true` if `date` does not occur on a weekend.
