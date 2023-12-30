@@ -15,18 +15,18 @@ fn end_of_month(mut yy: i32, mut mm: u32) -> NaiveDate {
         mm += 1;
     }
 
-    NaiveDate::from_ymd(yy, mm, 1).pred()
+    NaiveDate::from_ymd_opt(yy, mm, 1).expect("Valid date").pred()
 }
 
 #[test]
 fn test_end_of_month() {
-    assert_eq!( end_of_month(2018, 11), NaiveDate::from_ymd(2018, 11, 30) );
-    assert_eq!( end_of_month(2018, 12), NaiveDate::from_ymd(2018, 12, 31) );
-    assert_eq!( end_of_month(2019,  1), NaiveDate::from_ymd(2019,  1, 31) );
+    assert_eq!( end_of_month(2018, 11), NaiveDate::from_ymd_opt(2018, 11, 30).expect("Valid date") );
+    assert_eq!( end_of_month(2018, 12), NaiveDate::from_ymd_opt(2018, 12, 31).expect("Valid date") );
+    assert_eq!( end_of_month(2019,  1), NaiveDate::from_ymd_opt(2019,  1, 31).expect("Valid date") );
 }
 
 fn find_weekday_ascending(weekday: Weekday, yy: i32, mm: u32, occurrence: u32) -> NaiveDate {
-    let anchor = NaiveDate::from_ymd(yy, mm, 1);
+    let anchor = NaiveDate::from_ymd_opt(yy, mm, 1).expect("Valid date");
     let mut offset = (weekday.number_from_monday() + 7 - anchor.weekday().number_from_monday()) % 7;
 
     if occurrence > 1 {
@@ -57,45 +57,45 @@ fn find_weekday(weekday: Weekday, yy: i32, mm: u32, occurrence: u32, ascending: 
 
 #[test]
 fn test_find_weekday() {
-    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 1, true), NaiveDate::from_ymd(2015, 07, 06));
-    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 2, true), NaiveDate::from_ymd(2015, 07, 13));
-    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 3, true), NaiveDate::from_ymd(2015, 07, 20));
-    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 4, true), NaiveDate::from_ymd(2015, 07, 27));
-    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 5, true), NaiveDate::from_ymd(2015, 08, 03));
+    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 1, true), NaiveDate::from_ymd_opt(2015, 07, 06).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 2, true), NaiveDate::from_ymd_opt(2015, 07, 13).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 3, true), NaiveDate::from_ymd_opt(2015, 07, 20).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 4, true), NaiveDate::from_ymd_opt(2015, 07, 27).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 5, true), NaiveDate::from_ymd_opt(2015, 08, 03).expect("Valid date"));
 
-    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 1, false), NaiveDate::from_ymd(2015, 07, 27));
-    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 2, false), NaiveDate::from_ymd(2015, 07, 20));
-    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 3, false), NaiveDate::from_ymd(2015, 07, 13));
-    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 4, false), NaiveDate::from_ymd(2015, 07, 06));
-    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 5, false), NaiveDate::from_ymd(2015, 06, 29));
+    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 1, false), NaiveDate::from_ymd_opt(2015, 07, 27).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 2, false), NaiveDate::from_ymd_opt(2015, 07, 20).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 3, false), NaiveDate::from_ymd_opt(2015, 07, 13).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 4, false), NaiveDate::from_ymd_opt(2015, 07, 06).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Mon, 2015, 07, 5, false), NaiveDate::from_ymd_opt(2015, 06, 29).expect("Valid date"));
 
-    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 1, true), NaiveDate::from_ymd(2015, 07, 03));
-    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 2, true), NaiveDate::from_ymd(2015, 07, 10));
-    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 3, true), NaiveDate::from_ymd(2015, 07, 17));
-    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 4, true), NaiveDate::from_ymd(2015, 07, 24));
-    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 5, true), NaiveDate::from_ymd(2015, 07, 31));
-    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 6, true), NaiveDate::from_ymd(2015, 08, 07));
+    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 1, true), NaiveDate::from_ymd_opt(2015, 07, 03).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 2, true), NaiveDate::from_ymd_opt(2015, 07, 10).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 3, true), NaiveDate::from_ymd_opt(2015, 07, 17).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 4, true), NaiveDate::from_ymd_opt(2015, 07, 24).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 5, true), NaiveDate::from_ymd_opt(2015, 07, 31).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 6, true), NaiveDate::from_ymd_opt(2015, 08, 07).expect("Valid date"));
 
-    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 1, false), NaiveDate::from_ymd(2015, 07, 31));
-    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 2, false), NaiveDate::from_ymd(2015, 07, 24));
-    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 3, false), NaiveDate::from_ymd(2015, 07, 17));
-    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 4, false), NaiveDate::from_ymd(2015, 07, 10));
-    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 5, false), NaiveDate::from_ymd(2015, 07, 03));
-    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 6, false), NaiveDate::from_ymd(2015, 06, 26));
+    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 1, false), NaiveDate::from_ymd_opt(2015, 07, 31).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 2, false), NaiveDate::from_ymd_opt(2015, 07, 24).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 3, false), NaiveDate::from_ymd_opt(2015, 07, 17).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 4, false), NaiveDate::from_ymd_opt(2015, 07, 10).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 5, false), NaiveDate::from_ymd_opt(2015, 07, 03).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Fri, 2015, 07, 6, false), NaiveDate::from_ymd_opt(2015, 06, 26).expect("Valid date"));
 
-    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 1, true) , NaiveDate::from_ymd(2015, 07, 01));
-    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 2, true) , NaiveDate::from_ymd(2015, 07, 08));
-    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 3, true) , NaiveDate::from_ymd(2015, 07, 15));
-    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 4, true) , NaiveDate::from_ymd(2015, 07, 22));
-    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 5, true) , NaiveDate::from_ymd(2015, 07, 29));
-    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 6, true) , NaiveDate::from_ymd(2015, 08, 05));
+    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 1, true) , NaiveDate::from_ymd_opt(2015, 07, 01).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 2, true) , NaiveDate::from_ymd_opt(2015, 07, 08).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 3, true) , NaiveDate::from_ymd_opt(2015, 07, 15).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 4, true) , NaiveDate::from_ymd_opt(2015, 07, 22).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 5, true) , NaiveDate::from_ymd_opt(2015, 07, 29).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 6, true) , NaiveDate::from_ymd_opt(2015, 08, 05).expect("Valid date"));
 
-    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 1, false) , NaiveDate::from_ymd(2015, 07, 29));
-    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 2, false) , NaiveDate::from_ymd(2015, 07, 22));
-    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 3, false) , NaiveDate::from_ymd(2015, 07, 15));
-    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 4, false) , NaiveDate::from_ymd(2015, 07, 08));
-    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 5, false) , NaiveDate::from_ymd(2015, 07, 01));
-    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 6, false) , NaiveDate::from_ymd(2015, 06, 24));
+    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 1, false) , NaiveDate::from_ymd_opt(2015, 07, 29).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 2, false) , NaiveDate::from_ymd_opt(2015, 07, 22).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 3, false) , NaiveDate::from_ymd_opt(2015, 07, 15).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 4, false) , NaiveDate::from_ymd_opt(2015, 07, 08).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 5, false) , NaiveDate::from_ymd_opt(2015, 07, 01).expect("Valid date"));
+    assert_eq!(find_weekday(Weekday::Wed, 2015, 07, 6, false) , NaiveDate::from_ymd_opt(2015, 06, 24).expect("Valid date"));
 }
 
 /// In the United States, if a holiday falls on Saturday, it's observed on the preceding Friday.
@@ -112,11 +112,11 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for USSettlement {
 
     fn is_holiday(&self, date: T) -> bool {
         let (yy, mm, dd) = (date.year(), date.month(), date.day());
-        let dt_naive = NaiveDate::from_ymd(yy, mm, dd);
+        let dt_naive = NaiveDate::from_ymd_opt(yy, mm, dd).expect("Valid date");
 
         if
             // New Year's Day
-            adjust_weekend_holidays_us(NaiveDate::from_ymd(yy, 1, 1)) == dt_naive
+            adjust_weekend_holidays_us(NaiveDate::from_ymd_opt(yy, 1, 1).expect("Valid date")) == dt_naive
             ||
             // New Year's Day on the previous year when 1st Jan is Saturday
             (mm == 12 && dd == 31 && dt_naive.weekday() == Weekday::Fri)
@@ -131,10 +131,10 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for USSettlement {
             adjust_weekend_holidays_us(find_weekday(Weekday::Mon, yy, 5, 1, false)) == dt_naive
             ||
             // Juneteenth
-            (yy >= 2021 && adjust_weekend_holidays_us(NaiveDate::from_ymd(yy, 6, 19)) == dt_naive )
+            (yy >= 2021 && adjust_weekend_holidays_us(NaiveDate::from_ymd_opt(yy, 6, 19).expect("Valid date")) == dt_naive )
             ||
             // Independence Day
-            adjust_weekend_holidays_us(NaiveDate::from_ymd(yy, 7, 4)) == dt_naive
+            adjust_weekend_holidays_us(NaiveDate::from_ymd_opt(yy, 7, 4).expect("Valid date")) == dt_naive
             ||
             // Labor Day
             adjust_weekend_holidays_us(find_weekday(Weekday::Mon, yy, 9, 1, true)) == dt_naive
@@ -143,13 +143,13 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for USSettlement {
             adjust_weekend_holidays_us(find_weekday(Weekday::Mon, yy, 10, 2, true)) == dt_naive
             ||
             // Veterans Day
-            adjust_weekend_holidays_us(NaiveDate::from_ymd(yy, 11, 11)) == dt_naive
+            adjust_weekend_holidays_us(NaiveDate::from_ymd_opt(yy, 11, 11).expect("Valid date")) == dt_naive
             ||
             // Thanksgiving Day
             adjust_weekend_holidays_us(find_weekday(Weekday::Thu, yy, 11, 4, true)) == dt_naive
             ||
             // Christmas
-            adjust_weekend_holidays_us(NaiveDate::from_ymd(yy, 12, 25)) == dt_naive
+            adjust_weekend_holidays_us(NaiveDate::from_ymd_opt(yy, 12, 25).expect("Valid date")) == dt_naive
          {
             return true
         }
