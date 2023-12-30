@@ -7,6 +7,9 @@ pub mod brazil;
 /// Holiday Calendars for the United States.
 pub mod us;
 
+/// Holiday Calendars for Germany.
+pub mod de;
+
 /// The `WeekendsOnly` holiday calendar always returns `false` for method `is_holiday`.
 /// So `is_bday` method returns `false` only for weekend dates.
 pub struct WeekendsOnly;
