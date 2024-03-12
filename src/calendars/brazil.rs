@@ -25,6 +25,9 @@ fn is_brazilian_national_holiday<T: Datelike + Copy + PartialOrd>(date: T) -> bo
             // Proclamacao da Republica
             ((mm == 11) && (dd == 15))
             ||
+            // Dia Nacional de Zumbi e da Consciência Negra
+            ((mm == 11) && (dd == 20) && (yy > 2023))
+            ||
             // Natal
             ((mm == 12) && (dd == 25))
         {
