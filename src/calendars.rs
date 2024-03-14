@@ -25,12 +25,12 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for WeekendsOnly {
             let swapped: bool;
 
             if d1 < d0 {
-                from = NaiveDate::from_num_days_from_ce(d1.num_days_from_ce());
-                to = NaiveDate::from_num_days_from_ce(d0.num_days_from_ce());
+                from = NaiveDate::from_num_days_from_ce_opt(d1.num_days_from_ce()).unwrap();
+                to = NaiveDate::from_num_days_from_ce_opt(d0.num_days_from_ce()).unwrap();
                 swapped = true;
             } else {
-                from = NaiveDate::from_num_days_from_ce(d0.num_days_from_ce());
-                to = NaiveDate::from_num_days_from_ce(d1.num_days_from_ce());
+                from = NaiveDate::from_num_days_from_ce_opt(d0.num_days_from_ce()).unwrap();
+                to = NaiveDate::from_num_days_from_ce_opt(d1.num_days_from_ce()).unwrap();
                 swapped = false;
             }
 
@@ -40,7 +40,8 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for WeekendsOnly {
             result += whole_weeks * 5;
 
             let mut current_date =
-                NaiveDate::from_num_days_from_ce(from.num_days_from_ce() + whole_weeks * 7);
+                NaiveDate::from_num_days_from_ce_opt(from.num_days_from_ce() + whole_weeks * 7)
+                    .unwrap();
 
             if current_date < to {
                 let mut day_of_week = current_date.weekday();
@@ -51,7 +52,8 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for WeekendsOnly {
                     }
 
                     current_date =
-                        NaiveDate::from_num_days_from_ce(current_date.num_days_from_ce() + 1);
+                        NaiveDate::from_num_days_from_ce_opt(current_date.num_days_from_ce() + 1)
+                            .unwrap();
                     day_of_week = day_of_week.succ();
                 }
             }

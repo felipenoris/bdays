@@ -48,7 +48,10 @@ pub fn easter_num_days_from_ce(y: i32) -> Result<i32, EasterError> {
     }
 
     // Paschal Moon
-    let p = NaiveDate::from_ymd(y, 4, 19).num_days_from_ce() - se;
+    let p = NaiveDate::from_ymd_opt(y, 4, 19)
+        .ok_or_else(|| EasterError { y })?
+        .num_days_from_ce()
+        - se;
 
     // Easter: local the Sunday after the Paschal Moon
     Ok(p + 7 - (p % 7))
