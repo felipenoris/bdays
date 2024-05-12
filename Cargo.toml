@@ -1,6 +1,6 @@
 [package]
 name = "bdays"
-version = "0.1.4"
+version = "0.1.5-dev"
 authors = ["Felipe Noronha <felipenoris@gmail.com>"]
 license = "MIT"
 description = "Business Days calendars for Rustaceans."
