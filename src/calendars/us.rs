@@ -15,7 +15,7 @@ fn end_of_month(mut yy: i32, mut mm: u32) -> NaiveDate {
         mm += 1;
     }
 
-    NaiveDate::from_ymd_opt(yy, mm, 1).expect("Valid date").pred()
+    NaiveDate::from_ymd_opt(yy, mm, 1).expect("Valid date").pred_opt().unwrap()
 }
 
 #[test]

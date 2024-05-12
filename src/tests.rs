@@ -498,7 +498,7 @@ fn test_holiday_calendar_cache() {
     while dt <= d1 {
         assert_eq!(cached_cal.is_bday(dt), uncached_cal.is_bday(dt));
         assert_eq!(cached_cal.is_holiday(dt), uncached_cal.is_holiday(dt));
-        dt = NaiveDate::from_num_days_from_ce(dt.num_days_from_ce() + 1);
+        dt = NaiveDate::from_num_days_from_ce_opt(dt.num_days_from_ce() + 1).unwrap();
     }
 
     // to_bday
