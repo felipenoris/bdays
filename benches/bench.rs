@@ -1,15 +1,11 @@
-#[macro_use]
-extern crate bencher;
-extern crate bdays;
-extern crate chrono;
-
 use bdays::HolidayCalendar;
-use bencher::Bencher;
+use bdays::date::Date;
+use bencher::{Bencher, benchmark_group, benchmark_main};
 
 fn bench_weekendsonly(bench: &mut Bencher) {
     let cal = bdays::calendars::WeekendsOnly;
-    let d0 = chrono::NaiveDate::from_ymd(2015, 06, 29);
-    let d1 = chrono::NaiveDate::from_ymd(2100, 12, 20);
+    let d0 = Date::from_ymd(2015, 06, 29).unwrap();
+    let d1 = Date::from_ymd(2100, 12, 20).unwrap();
 
     bench.iter(|| {
         cal.bdays(d0, d1);
@@ -18,8 +14,8 @@ fn bench_weekendsonly(bench: &mut Bencher) {
 
 fn bench_brsettlement(bench: &mut Bencher) {
     let cal = bdays::calendars::brazil::BRSettlement;
-    let d0 = chrono::NaiveDate::from_ymd(2015, 06, 29);
-    let d1 = chrono::NaiveDate::from_ymd(2100, 12, 20);
+    let d0 = Date::from_ymd(2015, 06, 29).unwrap();
+    let d1 = Date::from_ymd(2100, 12, 20).unwrap();
 
     bench.iter(|| {
         cal.bdays(d0, d1);
@@ -28,13 +24,13 @@ fn bench_brsettlement(bench: &mut Bencher) {
 
 fn bench_brsettlement_cached(bench: &mut Bencher) {
     let cal = bdays::calendars::brazil::BRSettlement;
-    let d0 = chrono::NaiveDate::from_ymd(2015, 06, 29);
-    let d1 = chrono::NaiveDate::from_ymd(2100, 12, 20);
+    let d0 = Date::from_ymd(2015, 06, 29).unwrap();
+    let d1 = Date::from_ymd(2100, 12, 20).unwrap();
 
     let cached_cal = bdays::HolidayCalendarCache::new(
         cal,
-        chrono::NaiveDate::from_ymd(1980, 1, 1),
-        chrono::NaiveDate::from_ymd(2100, 12, 31),
+        Date::from_ymd(1980, 1, 1).unwrap(),
+        Date::from_ymd(2100, 12, 31).unwrap(),
     );
 
     bench.iter(|| {

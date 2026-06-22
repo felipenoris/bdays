@@ -1,80 +1,74 @@
 use crate::HolidayCalendar;
-use ::chrono::Datelike;
+use crate::date::Date;
 
-fn check_newyear<T: Datelike>(date: &T) -> bool {
+fn check_newyear(date: &Date) -> bool {
     date.day() == 1 && date.month() == 1
 }
 
-fn check_epiphany<T: Datelike>(date: &T) -> bool {
+fn check_epiphany(date: &Date) -> bool {
     date.day() == 6 && date.month() == 1
 }
 
-fn check_intwomansday<T: Datelike>(date: &T) -> bool {
+fn check_intwomansday(date: &Date) -> bool {
     date.day() == 8 && date.month() == 3
 }
 
-fn check_goodfriday<T: Datelike, T2: Datelike>(date: &T, easter_sunday: &T2) -> bool {
+fn check_goodfriday(date: &Date, easter_sunday: &Date) -> bool {
     date.num_days_from_ce() == easter_sunday.num_days_from_ce() - 2
 }
 
-fn check_eastermonday<T: Datelike, T2: Datelike>(date: &T, easter_sunday: &T2) -> bool {
+fn check_eastermonday(date: &Date, easter_sunday: &Date) -> bool {
     date.num_days_from_ce() == easter_sunday.num_days_from_ce() + 1
 }
 
-fn check_labourday<T: Datelike>(date: &T) -> bool {
+fn check_labourday(date: &Date) -> bool {
     date.day() == 1 && date.month() == 5
 }
 
-fn check_ascensionday<T: Datelike, T2: Datelike>(date: &T, easter_sunday: &T2) -> bool {
+fn check_ascensionday(date: &Date, easter_sunday: &Date) -> bool {
     date.num_days_from_ce() == easter_sunday.num_days_from_ce() + 39
 }
 
-fn check_whitmonday<T: Datelike, T2: Datelike>(date: &T, easter_sunday: &T2) -> bool {
+fn check_whitmonday(date: &Date, easter_sunday: &Date) -> bool {
     date.num_days_from_ce() == easter_sunday.num_days_from_ce() + 50
 }
 
-fn check_corpuschristi<T: Datelike, T2: Datelike>(date: &T, easter_sunday: &T2) -> bool {
+fn check_corpuschristi(date: &Date, easter_sunday: &Date) -> bool {
     date.num_days_from_ce() == easter_sunday.num_days_from_ce() + 60
 }
 
-fn check_assumptionday<T: Datelike>(date: &T) -> bool {
+fn check_assumptionday(date: &Date) -> bool {
     date.day() == 15 && date.month() == 8
 }
 
-fn check_childrenday<T: Datelike>(date: &T) -> bool {
+fn check_childrenday(date: &Date) -> bool {
     date.day() == 20 && date.month() == 9
 }
 
-fn check_unityday<T: Datelike>(date: &T) -> bool {
+fn check_unityday(date: &Date) -> bool {
     date.day() == 3 && date.month() == 10
 }
 
-fn check_reformationday<T: Datelike>(date: &T) -> bool {
+fn check_reformationday(date: &Date) -> bool {
     date.day() == 31 && date.month() == 10
 }
 
-fn check_allsaintsday<T: Datelike>(date: &T) -> bool {
+fn check_allsaintsday(date: &Date) -> bool {
     date.day() == 1 && date.month() == 11
 }
 
-fn check_repentence<T: Datelike>(date: &T) -> bool {
-    let november_22 = chrono::NaiveDate::from_ymd_opt(date.year(), 11, 22)
-        .expect("22 Nov should exist every year");
-    november_22
-        .iter_days()
-        .rev()
-        .take(7)
-        .find(|d| d.weekday() == chrono::Weekday::Wed)
-        .expect("One of the last 7 days must be a Wednesday")
-        .num_days_from_ce()
-        == date.num_days_from_ce()
+fn check_repentence(date: &Date) -> bool {
+    let november_22 = Date::from_ymd(date.year(), 11, 22).expect("22 Nov should exist every year");
+    let offset = (november_22.weekday().number_from_monday() + 7 - 3) % 7;
+
+    november_22.advance_days(-offset) == *date
 }
 
-fn check_christmasday<T: Datelike>(date: &T) -> bool {
+fn check_christmasday(date: &Date) -> bool {
     date.day() == 25 && date.month() == 12
 }
 
-fn check_2ndchristmasday<T: Datelike>(date: &T) -> bool {
+fn check_2ndchristmasday(date: &Date) -> bool {
     date.day() == 26 && date.month() == 12
 }
 
@@ -118,8 +112,9 @@ enum GermanStateHoliday {
 }
 
 impl GermanStateHoliday {
-    fn from_date<T: Datelike>(date: T) -> Option<Self> {
-        let easter_sunday = crate::easter::easter_naive_date(date.year()).ok()?;
+
+    fn from_date(date: Date) -> Option<Self> {
+        let easter_sunday = crate::easter::easter_date(date.year()).ok()?;
 
         if check_newyear(&date) {
             Some(Self::NewYearsDay)
@@ -369,8 +364,8 @@ fn test_number_of_holidays() {
 /// - Corpus Christi / Fronleichnam is a holiday in certain, explicitly defined
 ///   municipalities in Saxony (SN) and Thuringia (TH). We exclude it from
 ///   both provinces.
-impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for GermanState {
-    fn is_holiday(&self, date: T) -> bool {
+impl HolidayCalendar for GermanState {
+    fn is_holiday(&self, date: Date) -> bool {
         if let Some(holiday) = GermanStateHoliday::from_date(date) {
             self.has_holiday(holiday, date.year())
         } else {
@@ -381,8 +376,8 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for GermanState {
 
 /// This implementation considers a date a holiday if it is a holiday in any
 /// State in the Vec. See the implementation for [GermanState](GermanState) for details.
-impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for Vec<GermanState> {
-    fn is_holiday(&self, date: T) -> bool {
+impl HolidayCalendar for Vec<GermanState> {
+    fn is_holiday(&self, date: Date) -> bool {
         if let Some(holiday) = GermanStateHoliday::from_date(date) {
             self.iter()
                 .any(|state| state.has_holiday(holiday, date.year()))
@@ -394,216 +389,216 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for Vec<GermanState> {
 
 #[test]
 fn test_is_holiday() {
-    use ::chrono::NaiveDate;
+
     // New Year's Day
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 1, 1).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 1, 1).expect("Valid date")),
         true
     );
 
     // Epiphany
     assert_eq!(
-        GermanState::BW.is_holiday(NaiveDate::from_ymd_opt(2023, 1, 6).expect("Valid date")),
+        GermanState::BW.is_holiday(Date::from_ymd(2023, 1, 6).expect("Valid date")),
         true
     );
     assert_eq!(
-        GermanState::BY.is_holiday(NaiveDate::from_ymd_opt(2023, 1, 6).expect("Valid date")),
+        GermanState::BY.is_holiday(Date::from_ymd(2023, 1, 6).expect("Valid date")),
         true
     );
     assert_eq!(
-        GermanState::ST.is_holiday(NaiveDate::from_ymd_opt(2023, 1, 6).expect("Valid date")),
+        GermanState::ST.is_holiday(Date::from_ymd(2023, 1, 6).expect("Valid date")),
         true
     );
 
     // International Women's Day
     assert_eq!(
-        GermanState::BE.is_holiday(NaiveDate::from_ymd_opt(2020, 3, 8).expect("Valid date")),
+        GermanState::BE.is_holiday(Date::from_ymd(2020, 3, 8).expect("Valid date")),
         true
     );
     assert_eq!(
-        GermanState::MV.is_holiday(NaiveDate::from_ymd_opt(2023, 3, 8).expect("Valid date")),
+        GermanState::MV.is_holiday(Date::from_ymd(2023, 3, 8).expect("Valid date")),
         true
     );
 
     // Good Friday
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 4, 7).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 4, 7).expect("Valid date")),
         true
     );
 
     // Easter Monday
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 4, 10).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 4, 10).expect("Valid date")),
         true
     );
 
     // Labour Day
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 5, 1).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 5, 1).expect("Valid date")),
         true
     );
 
     // Ascension Day
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 5, 18).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 5, 18).expect("Valid date")),
         true
     );
 
     // Whit Monday
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 5, 29).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 5, 29).expect("Valid date")),
         true
     );
 
     // Corpus Christi
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 6, 8).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 6, 8).expect("Valid date")),
         true
     );
 
     // Assumption Day
     assert_eq!(
-        GermanState::BY.is_holiday(NaiveDate::from_ymd_opt(2023, 8, 15).expect("Valid date")),
+        GermanState::BY.is_holiday(Date::from_ymd(2023, 8, 15).expect("Valid date")),
         true
     );
     assert_eq!(
-        GermanState::SL.is_holiday(NaiveDate::from_ymd_opt(2023, 8, 15).expect("Valid date")),
+        GermanState::SL.is_holiday(Date::from_ymd(2023, 8, 15).expect("Valid date")),
         true
     );
 
     // World's Children Day
     assert_eq!(
-        GermanState::TH.is_holiday(NaiveDate::from_ymd_opt(2023, 9, 20).expect("Valid date")),
+        GermanState::TH.is_holiday(Date::from_ymd(2023, 9, 20).expect("Valid date")),
         true
     );
 
     // German Unity Day
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 10, 3).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 10, 3).expect("Valid date")),
         true
     );
 
     // Reformation Day
     assert_eq!(
-        GermanState::TH.is_holiday(NaiveDate::from_ymd_opt(2023, 10, 31).expect("Valid date")),
+        GermanState::TH.is_holiday(Date::from_ymd(2023, 10, 31).expect("Valid date")),
         true
     );
     assert_eq!(
-        GermanState::HB.is_holiday(NaiveDate::from_ymd_opt(2023, 10, 31).expect("Valid date")),
+        GermanState::HB.is_holiday(Date::from_ymd(2023, 10, 31).expect("Valid date")),
         true
     );
     assert_eq!(
-        GermanState::BY.is_holiday(NaiveDate::from_ymd_opt(2017, 10, 31).expect("Valid date")),
+        GermanState::BY.is_holiday(Date::from_ymd(2017, 10, 31).expect("Valid date")),
         true
     );
     assert_eq!(
-        GermanState::BB.is_holiday(NaiveDate::from_ymd_opt(1998, 10, 31).expect("Valid date")),
+        GermanState::BB.is_holiday(Date::from_ymd(1998, 10, 31).expect("Valid date")),
         true
     );
 
     // All Saint's Day
     assert_eq!(
-        GermanState::BW.is_holiday(NaiveDate::from_ymd_opt(2023, 11, 1).expect("Valid date")),
+        GermanState::BW.is_holiday(Date::from_ymd(2023, 11, 1).expect("Valid date")),
         true
     );
     assert_eq!(
-        GermanState::BY.is_holiday(NaiveDate::from_ymd_opt(2023, 11, 1).expect("Valid date")),
+        GermanState::BY.is_holiday(Date::from_ymd(2023, 11, 1).expect("Valid date")),
         true
     );
 
     // Repentance and Prayer Day
     assert_eq!(
-        GermanState::SN.is_holiday(NaiveDate::from_ymd_opt(2023, 11, 22).expect("Valid date")),
+        GermanState::SN.is_holiday(Date::from_ymd(2023, 11, 22).expect("Valid date")),
         true
     );
     assert_eq!(
-        GermanState::NI.is_holiday(NaiveDate::from_ymd_opt(1993, 11, 17).expect("Valid date")),
+        GermanState::NI.is_holiday(Date::from_ymd(1993, 11, 17).expect("Valid date")),
         true
     );
 
     // Christmas Day
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 12, 25).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 12, 25).expect("Valid date")),
         true
     );
 
     // Second Christmas Day
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 12, 26).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 12, 26).expect("Valid date")),
         true
     );
 
     // Non-Holidays
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 2, 1).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 2, 1).expect("Valid date")),
         false
     ); // Non-holiday date
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 7, 15).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 7, 15).expect("Valid date")),
         false
     ); // Non-holiday date
     assert_eq!(
-        GermanState::ANY.is_holiday(NaiveDate::from_ymd_opt(2023, 11, 20).expect("Valid date")),
+        GermanState::ANY.is_holiday(Date::from_ymd(2023, 11, 20).expect("Valid date")),
         false
     ); // Non-holiday date
 
     // Epiphany in states where it's not observed
     assert_eq!(
-        GermanState::NI.is_holiday(NaiveDate::from_ymd_opt(2023, 1, 6).expect("Valid date")),
+        GermanState::NI.is_holiday(Date::from_ymd(2023, 1, 6).expect("Valid date")),
         false
     );
     assert_eq!(
-        GermanState::RP.is_holiday(NaiveDate::from_ymd_opt(2023, 1, 6).expect("Valid date")),
+        GermanState::RP.is_holiday(Date::from_ymd(2023, 1, 6).expect("Valid date")),
         false
     );
 
     // International Women's Day in states where it's not observed
     assert_eq!(
-        GermanState::TH.is_holiday(NaiveDate::from_ymd_opt(2023, 3, 8).expect("Valid date")),
+        GermanState::TH.is_holiday(Date::from_ymd(2023, 3, 8).expect("Valid date")),
         false
     );
     assert_eq!(
-        GermanState::NW.is_holiday(NaiveDate::from_ymd_opt(2023, 3, 8).expect("Valid date")),
+        GermanState::NW.is_holiday(Date::from_ymd(2023, 3, 8).expect("Valid date")),
         false
     );
 
     // Reformation Day in BY
     assert_eq!(
-        GermanState::BY.is_holiday(NaiveDate::from_ymd_opt(2023, 10, 31).expect("Valid date")),
+        GermanState::BY.is_holiday(Date::from_ymd(2023, 10, 31).expect("Valid date")),
         false
     );
 
     // Repentance and Prayer Day
     assert_eq!(
-        GermanState::NI.is_holiday(NaiveDate::from_ymd_opt(2023, 11, 22).expect("Valid date")),
+        GermanState::NI.is_holiday(Date::from_ymd(2023, 11, 22).expect("Valid date")),
         false
     );
 
     // All Saint's Day in states where it's not observed
     assert_eq!(
-        GermanState::HH.is_holiday(NaiveDate::from_ymd_opt(2023, 11, 1).expect("Valid date")),
+        GermanState::HH.is_holiday(Date::from_ymd(2023, 11, 1).expect("Valid date")),
         false
     );
     assert_eq!(
-        GermanState::NI.is_holiday(NaiveDate::from_ymd_opt(2023, 11, 1).expect("Valid date")),
+        GermanState::NI.is_holiday(Date::from_ymd(2023, 11, 1).expect("Valid date")),
         false
     );
 
     // Holidays in other states
     assert_eq!(
-        GermanState::BY.is_holiday(NaiveDate::from_ymd_opt(2023, 10, 31).expect("Valid date")),
+        GermanState::BY.is_holiday(Date::from_ymd(2023, 10, 31).expect("Valid date")),
         false
     ); // Reformation Day in BY
     assert_eq!(
-        GermanState::NI.is_holiday(NaiveDate::from_ymd_opt(2023, 8, 15).expect("Valid date")),
+        GermanState::NI.is_holiday(Date::from_ymd(2023, 8, 15).expect("Valid date")),
         false
     ); // Assumption Day in NI
     assert_eq!(
-        GermanState::SL.is_holiday(NaiveDate::from_ymd_opt(2023, 9, 20).expect("Valid date")),
+        GermanState::SL.is_holiday(Date::from_ymd(2023, 9, 20).expect("Valid date")),
         false
     ); // World's Children Day in SL
     assert_eq!(
-        GermanState::BW.is_holiday(NaiveDate::from_ymd_opt(2023, 3, 8).expect("Valid date")),
+        GermanState::BW.is_holiday(Date::from_ymd(2023, 3, 8).expect("Valid date")),
         false
     ); // International Women's Day in BW
 }

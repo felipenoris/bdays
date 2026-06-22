@@ -1,6 +1,6 @@
 [package]
 name = "bdays"
-version = "0.1.5-dev"
+version = "0.2.0-dev"
 authors = ["Felipe Noronha <felipenoris@gmail.com>"]
 license = "MIT"
 description = "Business Days calendars for Rustaceans."
@@ -11,9 +11,6 @@ keywords = ["date", "calendar", "finance"]
 categories = ["date-and-time"]
 readme = "README.md"
 edition = "2024"
-
-[dependencies]
-chrono = { version = "0.4", default-features = false }
 
 [dev-dependencies]
 bencher = "0.1"

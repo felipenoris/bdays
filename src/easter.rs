@@ -1,4 +1,4 @@
-use chrono::{Datelike, NaiveDate};
+use crate::date::Date;
 use std::error;
 use std::fmt;
 
@@ -30,7 +30,7 @@ impl error::Error for EasterError {}
 
 /// Returns easter date for year `y`
 /// as the number of days since January 1, Year 1 (aka Day 1) in the proleptic Gregorian calendar.
-pub fn easter_num_days_from_ce(y: i32) -> Result<i32, EasterError> {
+pub fn easter_num_days_from_ce(y: i32) -> Result<i64, EasterError> {
     // Algo R only works after 1582
     if y < 1582 {
         return Err(EasterError { y });
@@ -48,10 +48,10 @@ pub fn easter_num_days_from_ce(y: i32) -> Result<i32, EasterError> {
     }
 
     // Paschal Moon
-    let p = NaiveDate::from_ymd_opt(y, 4, 19)
-        .ok_or_else(|| EasterError { y })?
+    let p = Date::from_ymd(y, 4, 19)
+        .unwrap()
         .num_days_from_ce()
-        - se;
+        - (se as i64);
 
     // Easter: local the Sunday after the Paschal Moon
     Ok(p + 7 - (p % 7))
@@ -59,11 +59,7 @@ pub fn easter_num_days_from_ce(y: i32) -> Result<i32, EasterError> {
 
 /// Returns easter date for year `y`
 /// as a `chrono::NaiveDate`.
-pub fn easter_naive_date(y: i32) -> Result<NaiveDate, EasterError> {
+pub fn easter_date(y: i32) -> Result<Date, EasterError> {
     let rata = easter_num_days_from_ce(y)?;
-
-    match NaiveDate::from_num_days_from_ce_opt(rata) {
-        Some(result) => Ok(result),
-        None => Err(EasterError { y }),
-    }
+    Ok(Date::from_num_days_from_ce(rata))
 }

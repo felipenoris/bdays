@@ -1,13 +1,13 @@
 use crate::easter;
 use crate::HolidayCalendar;
-use ::chrono::{Datelike, Weekday};
+use crate::date::{Date, Weekday};
 
 /// Brazilian banking holidays.
 /// This calendar is defined by brazilian federal holidays plus Carnival.
 pub struct BRSettlement;
 
-fn is_brazilian_national_holiday<T: Datelike + Copy + PartialOrd>(date: T) -> bool {
-    let (yy, mm, dd) = (date.year(), date.month(), date.day());
+fn is_brazilian_national_holiday(date: Date) -> bool {
+    let (yy, mm, dd) = date.to_ymd();
 
     // Bisection
     if mm >= 8 {
@@ -74,8 +74,8 @@ fn is_brazilian_national_holiday<T: Datelike + Copy + PartialOrd>(date: T) -> bo
     false
 }
 
-impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for BRSettlement {
-    fn is_holiday(&self, date: T) -> bool {
+impl HolidayCalendar for BRSettlement {
+    fn is_holiday(&self, date: Date) -> bool {
         is_brazilian_national_holiday(date)
     }
 }
@@ -83,9 +83,11 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for BRSettlement {
 /// B3 Exchange holidays (<https://www.b3.com.br>).
 pub struct BrazilExchange;
 
-impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for BrazilExchange {
-    fn is_holiday(&self, date: T) -> bool {
-        let (yy, mm, dd) = (date.year(), date.month(), date.day());
+impl HolidayCalendar for BrazilExchange {
+
+    fn is_holiday(&self, date: Date) -> bool {
+
+        let (yy, mm, dd) = date.to_ymd();
 
         if
         // Aniversário de São Paulo
@@ -101,7 +103,7 @@ impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for BrazilExchange {
             ( mm == 12 && dd == 24)
             ||
             // Último dia útil do ano
-            ( mm == 12 && (dd == 31 || (dd>=29 && date.weekday() == Weekday::Fri) ))
+            ( mm == 12 && (dd == 31 || (dd>=29 && date.weekday() == Weekday::Friday) ))
         {
             return true;
         }

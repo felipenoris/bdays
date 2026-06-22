@@ -1,5 +1,5 @@
-use crate::HolidayCalendar;
-use ::chrono::{Datelike, NaiveDate};
+use crate::{HolidayCalendar, is_weekday};
+use crate::date::Date;
 
 /// Holiday Calendars for Brazil.
 pub mod brazil;
@@ -14,51 +14,40 @@ pub mod de;
 /// So `is_bday` method returns `false` only for weekend dates.
 pub struct WeekendsOnly;
 
-impl<T: Datelike + Copy + PartialOrd> HolidayCalendar<T> for WeekendsOnly {
-    fn is_holiday(&self, _date: T) -> bool {
+impl HolidayCalendar for WeekendsOnly {
+
+    fn is_holiday(&self, _: Date) -> bool {
         false
     }
 
-    fn bdays(&self, d0: T, d1: T) -> i32 {
+    fn bdays(&self, d0: Date, d1: Date) -> i64 {
         if d0 == d1 {
             0
         } else {
-            let from: NaiveDate;
-            let to: NaiveDate;
+            let from: Date;
+            let to: Date;
             let swapped: bool;
 
             if d1 < d0 {
-                from = NaiveDate::from_num_days_from_ce_opt(d1.num_days_from_ce()).unwrap();
-                to = NaiveDate::from_num_days_from_ce_opt(d0.num_days_from_ce()).unwrap();
+                from = d1;
+                to = d0;
                 swapped = true;
             } else {
-                from = NaiveDate::from_num_days_from_ce_opt(d0.num_days_from_ce()).unwrap();
-                to = NaiveDate::from_num_days_from_ce_opt(d1.num_days_from_ce()).unwrap();
+                from = d0;
+                to = d1;
                 swapped = false;
             }
 
-            let mut result: i32 = 0;
-            let days = to.num_days_from_ce() - from.num_days_from_ce();
-            let whole_weeks = days / 7;
-            result += whole_weeks * 5;
+            let whole_weeks = (to.julian_day_number() - from.julian_day_number()) / 7;
+            let mut result = whole_weeks * 5;
+            let mut current_date = from.advance_days(whole_weeks * 7);
 
-            let mut current_date =
-                NaiveDate::from_num_days_from_ce_opt(from.num_days_from_ce() + whole_weeks * 7)
-                    .unwrap();
-
-            if current_date < to {
-                let mut day_of_week = current_date.weekday();
-
-                while current_date < to {
-                    if day_of_week.number_from_monday() < 6 {
-                        result += 1;
-                    }
-
-                    current_date =
-                        NaiveDate::from_num_days_from_ce_opt(current_date.num_days_from_ce() + 1)
-                            .unwrap();
-                    day_of_week = day_of_week.succ();
+            while current_date < to {
+                if is_weekday(current_date) {
+                    result += 1;
                 }
+
+                current_date = current_date.next_date();
             }
 
             if swapped {
