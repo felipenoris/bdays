@@ -41,23 +41,22 @@ Add these dependencies to your `Cargo.toml` file.
 
 ```toml
 [dependencies]
-bdays = "0.1"
-chrono = "0.4"
+bdays = "0.2"
 ```
 
 The following example shows the basic functions from this package.
 
 ```rust
-use chrono::NaiveDate;
+use bdays::date::Date;
 use bdays::HolidayCalendar;
 
 fn main() {
     // creates a holiday calendar instance
     let cal = bdays::calendars::WeekendsOnly;
 
-    let d0 = NaiveDate::from_ymd(2018, 11, 22);
-    let d1 = NaiveDate::from_ymd(2018, 11, 24);
-    let d2 = NaiveDate::from_ymd(2018, 11, 26);
+    let d0 = Date::from_ymd(2018, 11, 22).unwrap();
+    let d1 = Date::from_ymd(2018, 11, 24).unwrap();
+    let d2 = Date::from_ymd(2018, 11, 26).unwrap();
 
     // checks if a date is a holiday
     assert_eq!( cal.is_holiday(d0), false );
@@ -67,7 +66,7 @@ fn main() {
     assert_eq!( cal.is_bday(d1), false );
 
     // adjusts to the last/next business day
-    assert_eq!( cal.to_bday(d1, false), NaiveDate::from_ymd(2018, 11, 23) );
+    assert_eq!( cal.to_bday(d1, false), Date::from_ymd(2018, 11, 23).unwrap() );
     assert_eq!( cal.to_bday(d1, true) , d2 );
 
     // advances a number of business days
@@ -83,12 +82,12 @@ fn main() {
 
 As a motivation, this example might take some time to finish.
 ```rust
-use chrono::NaiveDate;
+use bdays::date::Date;
 use bdays::HolidayCalendar;
 
 let cal = bdays::calendars::brazil::BRSettlement;
-let d0 = NaiveDate::from_ymd(2001, 2, 1);
-let d1 = NaiveDate::from_ymd(2100, 2, 1);
+let d0 = Date::from_ymd(2001, 2, 1).unwrap();
+let d1 = Date::from_ymd(2100, 2, 1).unwrap();
 
 for _i in 0..30 {
     cal.bdays(d0, d1);
@@ -98,17 +97,17 @@ You can use `HolidayCalendarCache` to perform fast business days calculation
 for a given range of dates.
 
 ```rust
-use chrono::NaiveDate;
+use bdays::date::Date;
 use bdays::HolidayCalendar;
 
 let cal = bdays::HolidayCalendarCache::new(
     bdays::calendars::brazil::BRSettlement,
-    NaiveDate::from_ymd(1980, 1, 1),
-    NaiveDate::from_ymd(2100, 12, 31)
+    Date::from_ymd(1980, 1, 1).unwrap(),
+    Date::from_ymd(2100, 12, 31).unwrap(),
 );
 
-let d0 = NaiveDate::from_ymd(2001, 2, 1);
-let d1 = NaiveDate::from_ymd(2100, 2, 1);
+let d0 = Date::from_ymd(2001, 2, 1).unwrap();
+let d1 = Date::from_ymd(2100, 2, 1).unwrap();
 
 for _i in 0..30 {
     cal.bdays(d0, d1);
