@@ -225,7 +225,7 @@ impl HolidayCalendarCache {
             );
         }
 
-        let len = (dt_max.num_days_from_ce() - dt_min.num_days_from_ce() + 1) as usize;
+        let len = (dt_max.julian_day_number() - dt_min.julian_day_number() + 1) as usize;
         let mut is_holiday_vec: Vec<bool> = Vec::with_capacity(len);
         let mut is_bday_vec: Vec<bool> = Vec::with_capacity(len);
         let mut bdays_counter_vec: Vec<i64> = Vec::with_capacity(len);
@@ -264,7 +264,7 @@ impl HolidayCalendarCache {
     }
 
     fn row_index(&self, date: Date) -> usize {
-        (date.num_days_from_ce() - self.dt_min.num_days_from_ce()) as usize
+        (date.julian_day_number() - self.dt_min.julian_day_number()) as usize
     }
 
     fn assert_in_bounds(&self, date: Date) {
