@@ -3,7 +3,11 @@ use std::fmt;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Error {
-    InvalidDate(i32, u32, u32),
+    InvalidDate{
+        year: i32,
+        month: u32,
+        day: u32,
+    }
 }
 
 impl fmt::Display for Error {
@@ -117,7 +121,7 @@ impl Date {
     pub fn from_ymd(year: i32, month: u32, day: u32) -> Result<Self, Error> {
 
         if !validate_date(year, month, day) {
-            return Err(Error::InvalidDate(year, month, day));
+            return Err(Error::InvalidDate{year, month, day});
         }
 
         Ok(
