@@ -30,7 +30,7 @@ impl error::Error for EasterError {}
 
 /// Returns easter date for year `y`
 /// as the number of days since January 1, Year 1 (aka Day 1) in the proleptic Gregorian calendar.
-pub fn easter_num_days_from_ce(y: i32) -> Result<i64, EasterError> {
+pub fn easter_num_days_from_ce(y: i32) -> Result<i32, EasterError> {
     // Algo R only works after 1582
     if y < 1582 {
         return Err(EasterError { y });
@@ -51,7 +51,7 @@ pub fn easter_num_days_from_ce(y: i32) -> Result<i64, EasterError> {
     let p = Date::from_ymd(y, 4, 19)
         .unwrap()
         .num_days_from_ce()
-        - (se as i64);
+        - se;
 
     // Easter: local the Sunday after the Paschal Moon
     Ok(p + 7 - (p % 7))

@@ -9,16 +9,16 @@ fn find_weekday(target_weekday: Weekday, yy: i32, mm: u32, occurrence: u32, asce
     assert!(occurrence > 0);
 
     let mut anchor = Date::from_ymd(yy, mm, 1).unwrap();
-    let mut offset: i64;
+    let mut offset: i32;
 
     if ascending {
-        offset = (target_weekday.number_from_monday() + 7 - anchor.weekday().number_from_monday()) % 7;
+        offset = ( target_weekday.number_from_monday() + 7 - anchor.weekday().number_from_monday() ) % 7;
     } else {
         anchor = anchor.end_of_month();
-        offset = (anchor.weekday().number_from_monday() + 7 - target_weekday.number_from_monday()) % 7;
+        offset = ( anchor.weekday().number_from_monday() + 7 - target_weekday.number_from_monday() ) % 7;
     }
 
-    offset += (occurrence as i64 - 1) * 7;
+    offset += (occurrence as i32 - 1) * 7;
 
     if ascending {
         anchor.advance_days(offset)

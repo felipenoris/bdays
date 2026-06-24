@@ -16,7 +16,7 @@ impl error::Error for Error {}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd)]
 pub struct Date {
-    jdn: i64,
+    jdn: i32,
 }
 
 #[repr(u8)]
@@ -45,8 +45,8 @@ impl Weekday {
         }
     }
 
-    pub fn number_from_monday(self) -> i64 {
-        self as i64
+    pub fn number_from_monday(self) -> i32 {
+        self as i32
     }
 }
 
@@ -74,8 +74,8 @@ fn validate_date(year: i32, month: u32, day: u32) -> bool {
 
 // Fliegel and van Flandern (1968) algorithm
 // https://aa.usno.navy.mil/faq/JD_formula
-fn jdn_to_ymd(jdn: i64) -> (i32, u32, u32) {
-    let mut l = jdn + 68569;
+fn jdn_to_ymd(jdn: i32) -> (i32, u32, u32) {
+    let mut l = (jdn as i64) + 68569;
     let n = (4 * l) / 146097;
     l = l - (146097 * n + 3) / 4;
     let i = (4000 * (l + 1)) / 1461001;
@@ -90,7 +90,7 @@ fn jdn_to_ymd(jdn: i64) -> (i32, u32, u32) {
     (year as i32, month as u32, day as u32)
 }
 
-fn ymd_to_jdn(year: i32, month: u32, day: u32) -> i64 {
+fn ymd_to_jdn(year: i32, month: u32, day: u32) -> i32 {
     let year = year as i64;
     let month = month as i64;
     let day = day as i64;
@@ -107,12 +107,12 @@ fn ymd_to_jdn(year: i32, month: u32, day: u32) -> i64 {
         + y / 400
         - 32045;
 
-    jdn
+    jdn.try_into().expect("Overflow")
 }
 
 impl Date {
 
-    const JDN_COMMON_ERA_OFFSET: i64 = 1721425;
+    const JDN_COMMON_ERA_OFFSET: i32 = 1721425;
 
     pub fn from_ymd(year: i32, month: u32, day: u32) -> Result<Self, Error> {
 
@@ -127,19 +127,19 @@ impl Date {
         )
     }
 
-    pub(crate) fn from_julian_day_number(num_days: i64) -> Self {
+    pub(crate) fn from_julian_day_number(num_days: i32) -> Self {
         Date { jdn: num_days }
     }
 
-    pub fn from_num_days_from_ce(num_days: i64) -> Self {
+    pub fn from_num_days_from_ce(num_days: i32) -> Self {
         Self::from_julian_day_number(num_days + Self::JDN_COMMON_ERA_OFFSET)
     }
 
-    pub(crate) fn julian_day_number(&self) -> i64 {
+    pub(crate) fn julian_day_number(&self) -> i32 {
         self.jdn
     }
 
-    pub fn advance_days(&self, days: i64) -> Self {
+    pub fn advance_days(&self, days: i32) -> Self {
         Date{
             jdn: self.jdn + days,
         }
@@ -157,7 +157,7 @@ impl Date {
         jdn_to_ymd(self.jdn)
     }
 
-    pub fn num_days_from_ce(&self) -> i64 {
+    pub fn num_days_from_ce(&self) -> i32 {
         self.jdn - Self::JDN_COMMON_ERA_OFFSET
     }
 

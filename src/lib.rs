@@ -148,7 +148,7 @@ pub trait HolidayCalendar {
     }
 
     /// Advances `bdays_count` number of business days from `date`.
-    fn advance_bdays(&self, mut date: Date, bdays_count: i64) -> Date {
+    fn advance_bdays(&self, mut date: Date, bdays_count: i32) -> Date {
         date = self.to_bday(date, true);
 
         let inc = bdays_count.signum();
@@ -170,7 +170,7 @@ pub trait HolidayCalendar {
     }
 
     /// Returns the number of business days between `d0` and `d1`.
-    fn bdays(&self, mut d0: Date, mut d1: Date) -> i64 {
+    fn bdays(&self, mut d0: Date, mut d1: Date) -> i32 {
 
         d0 = self.to_bday(d0, true);
         d1 = self.to_bday(d1, true);
@@ -204,7 +204,7 @@ pub trait HolidayCalendar {
 pub struct HolidayCalendarCache {
     is_holiday_vec: Vec<bool>,
     is_bday_vec: Vec<bool>,
-    bdays_counter_vec: Vec<i64>,
+    bdays_counter_vec: Vec<i32>,
     dt_min: Date,
     dt_max: Date,
 }
@@ -228,7 +228,7 @@ impl HolidayCalendarCache {
         let len = (dt_max.julian_day_number() - dt_min.julian_day_number() + 1) as usize;
         let mut is_holiday_vec: Vec<bool> = Vec::with_capacity(len);
         let mut is_bday_vec: Vec<bool> = Vec::with_capacity(len);
-        let mut bdays_counter_vec: Vec<i64> = Vec::with_capacity(len);
+        let mut bdays_counter_vec: Vec<i32> = Vec::with_capacity(len);
 
         is_holiday_vec.push(calendar.is_holiday(dt_min));
         is_bday_vec.push(calendar.is_bday(dt_min));
@@ -289,7 +289,7 @@ impl HolidayCalendar for HolidayCalendarCache {
         self.is_bday_vec[self.row_index(date)]
     }
 
-    fn bdays(&self, mut d0: Date, mut d1: Date) -> i64 {
+    fn bdays(&self, mut d0: Date, mut d1: Date) -> i32 {
         d0 = self.to_bday(d0, true);
         d1 = self.to_bday(d1, true);
 

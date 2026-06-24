@@ -20,7 +20,7 @@ impl HolidayCalendar for WeekendsOnly {
         false
     }
 
-    fn bdays(&self, d0: Date, d1: Date) -> i64 {
+    fn bdays(&self, d0: Date, d1: Date) -> i32 {
         if d0 == d1 {
             0
         } else {
