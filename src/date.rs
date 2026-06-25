@@ -173,6 +173,11 @@ impl Date {
         ).unwrap()
     }
 
+    pub fn start_of_month(&self) -> Self {
+        let (yy, mm, _) = self.to_ymd();
+        Self::from_ymd(yy, mm, 1).unwrap()
+    }
+
     pub fn end_of_month(&self) -> Self {
         let (yy, mm, _) = self.to_ymd();
         Self::from_ymd(yy, mm, days_in_month(yy, mm)).unwrap()
@@ -261,8 +266,12 @@ fn test_dates_format() {
 }
 
 #[test]
-fn test_end_of_month() {
+fn test_start_end_of_month() {
     assert_eq!( Date::from_ymd(2018, 11, 1).unwrap().end_of_month(), Date::from_ymd(2018, 11, 30).unwrap());
     assert_eq!( Date::from_ymd(2018, 12, 1).unwrap().end_of_month(), Date::from_ymd(2018, 12, 31).unwrap());
     assert_eq!( Date::from_ymd(2019, 1, 1).unwrap().end_of_month(), Date::from_ymd(2019, 1, 31).unwrap());
+
+    assert_eq!( Date::from_ymd(2018, 11, 1).unwrap().start_of_month(), Date::from_ymd(2018, 11, 1).unwrap());
+    assert_eq!( Date::from_ymd(2018, 12, 15).unwrap().start_of_month(), Date::from_ymd(2018, 12, 1).unwrap());
+    assert_eq!( Date::from_ymd(2019, 1, 31).unwrap().start_of_month(), Date::from_ymd(2019, 1, 1).unwrap());
 }
