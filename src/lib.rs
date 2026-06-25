@@ -1,5 +1,7 @@
 #![doc = include_str!("../README.md")]
 
+pub mod yearmonth;
+
 pub mod date;
 
 use date::{Date, Weekday};

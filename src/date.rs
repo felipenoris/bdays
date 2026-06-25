@@ -3,7 +3,7 @@ use std::fmt;
 use std::ops::Sub;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Error {
+pub enum DateError {
     InvalidDate{
         year: i32,
         month: i32,
@@ -11,13 +11,13 @@ pub enum Error {
     }
 }
 
-impl fmt::Display for Error {
+impl fmt::Display for DateError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", *self)
     }
 }
 
-impl error::Error for Error {}
+impl error::Error for DateError {}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd)]
 pub struct Date {
@@ -119,10 +119,10 @@ impl Date {
 
     const JDN_COMMON_ERA_OFFSET: i32 = 1721425;
 
-    pub fn from_ymd(year: i32, month: i32, day: i32) -> Result<Self, Error> {
+    pub fn from_ymd(year: i32, month: i32, day: i32) -> Result<Self, DateError> {
 
         if !validate_date(year, month, day) {
-            return Err(Error::InvalidDate{year, month, day});
+            return Err(DateError::InvalidDate{year, month, day});
         }
 
         Ok(
@@ -201,10 +201,10 @@ impl Date {
 }
 
 impl fmt::Display for Date {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let (y, m, d) = self.to_ymd();
 
-        if y < 10_000 {
+        if -10_000 < y && y < 10_000 {
             write!(f, "{y:04}-{m:02}-{d:02}")
         } else {
             write!(f, "{y}-{m:02}-{d:02}")
