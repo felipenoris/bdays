@@ -168,8 +168,12 @@ impl HolidayCalendarCache {
         (date.julian_day_number() - self.dt_min.julian_day_number()) as usize
     }
 
-    pub fn assert_in_bounds(&self, date: Date) {
-        if date < self.dt_min || self.dt_max < date {
+    pub fn is_date_in_bounds(&self, date: Date) -> bool {
+        self.dt_min <= date && date <= self.dt_max
+    }
+
+    fn assert_in_bounds(&self, date: Date) {
+        if !self.is_date_in_bounds(date) {
             panic!(
                 "Date {} out of bounds of holiday calendar cache. [{}, {}].",
                 date, self.dt_min, self.dt_max
