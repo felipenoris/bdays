@@ -118,14 +118,12 @@ impl HolidayCalendarCache {
     /// in the range of dates from `dt_min` to `dt_max`.
     pub fn new<T: HolidayCalendar>(
         calendar: T,
-        dt_min: Date,
-        dt_max: Date,
+        mut dt_min: Date,
+        mut dt_max: Date,
     ) -> HolidayCalendarCache {
+
         if dt_min > dt_max {
-            panic!(
-                "dt_min {} should not be greater than dt_max {}.",
-                dt_min, dt_max
-            );
+            (dt_min, dt_max) = (dt_max, dt_min);
         }
 
         let len = (dt_max.julian_day_number() - dt_min.julian_day_number() + 1) as usize;
