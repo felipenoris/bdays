@@ -6,8 +6,8 @@ use std::ops::Sub;
 pub enum Error {
     InvalidDate{
         year: i32,
-        month: u32,
-        day: u32,
+        month: i32,
+        day: i32,
     }
 }
 
@@ -59,9 +59,9 @@ fn is_leap_year(year: i32) -> bool {
     (year % 4 == 0 && year % 100 != 0) || year % 400 == 0
 }
 
-const DAYS_IN_MONTH: [u32; 12] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const DAYS_IN_MONTH: [i32; 12] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-fn days_in_month(year: i32, month: u32) -> u32 {
+fn days_in_month(year: i32, month: i32) -> i32 {
     if month == 2 && is_leap_year(year) {
         29
     } else {
@@ -69,7 +69,7 @@ fn days_in_month(year: i32, month: u32) -> u32 {
     }
 }
 
-fn validate_date(year: i32, month: u32, day: u32) -> bool {
+fn validate_date(year: i32, month: i32, day: i32) -> bool {
     if month < 1 || month > 12 {
         return false;
     }
@@ -79,7 +79,7 @@ fn validate_date(year: i32, month: u32, day: u32) -> bool {
 
 // Fliegel and van Flandern (1968) algorithm
 // https://aa.usno.navy.mil/faq/JD_formula
-fn jdn_to_ymd(jdn: i32) -> (i32, u32, u32) {
+fn jdn_to_ymd(jdn: i32) -> (i32, i32, i32) {
     let mut l = (jdn as i64) + 68569;
     let n = (4 * l) / 146097;
     l = l - (146097 * n + 3) / 4;
@@ -92,10 +92,10 @@ fn jdn_to_ymd(jdn: i32) -> (i32, u32, u32) {
     let month = j + 2 - 12 * l;
     let year = 100 * (n - 49) + i + l;
 
-    (year as i32, month as u32, day as u32)
+    (year as i32, month as i32, day as i32)
 }
 
-fn ymd_to_jdn(year: i32, month: u32, day: u32) -> i32 {
+fn ymd_to_jdn(year: i32, month: i32, day: i32) -> i32 {
     let year = year as i64;
     let month = month as i64;
     let day = day as i64;
@@ -119,7 +119,7 @@ impl Date {
 
     const JDN_COMMON_ERA_OFFSET: i32 = 1721425;
 
-    pub fn from_ymd(year: i32, month: u32, day: u32) -> Result<Self, Error> {
+    pub fn from_ymd(year: i32, month: i32, day: i32) -> Result<Self, Error> {
 
         if !validate_date(year, month, day) {
             return Err(Error::InvalidDate{year, month, day});
@@ -158,7 +158,7 @@ impl Date {
         self.advance_days(1)
     }
 
-    pub fn to_ymd(&self) -> (i32, u32, u32) {
+    pub fn to_ymd(&self) -> (i32, i32, i32) {
         jdn_to_ymd(self.jdn)
     }
 
@@ -189,12 +189,12 @@ impl Date {
         yy
     }
 
-    pub fn month(&self) -> u32 {
+    pub fn month(&self) -> i32 {
         let (_, mm, _) = self.to_ymd();
         mm
     }
 
-    pub fn day(&self) -> u32 {
+    pub fn day(&self) -> i32 {
         let (_, _, dd) = self.to_ymd();
         dd
     }

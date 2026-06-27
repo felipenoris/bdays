@@ -4,7 +4,7 @@ use crate::HolidayCalendar;
 /// United States federal holidays.
 pub struct USSettlement;
 
-fn find_weekday(target_weekday: Weekday, yy: i32, mm: u32, occurrence: u32, ascending: bool) -> Date {
+fn find_weekday(target_weekday: Weekday, yy: i32, mm: i32, occurrence: i32, ascending: bool) -> Date {
 
     assert!(occurrence > 0);
 
