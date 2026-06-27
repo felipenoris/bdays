@@ -1,5 +1,6 @@
 use std::error;
 use std::fmt;
+use std::ops::Sub;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Error {
@@ -235,6 +236,23 @@ fn test_sequential_jdn() {
 
         previous_date = Some(date);
     }
+}
+
+impl Sub for Date {
+    type Output = i32;
+
+    fn sub(self, other: Self) -> Self::Output {
+        self.jdn - other.jdn
+    }
+}
+
+#[test]
+fn test_sub() {
+    let dt1 = Date::from_ymd(2026, 6, 27).unwrap();
+    let dt0 = Date::from_ymd(2026, 6, 26).unwrap();
+    assert_eq!(dt1 - dt0, 1);
+    assert_eq!(dt1 - dt1, 0);
+    assert_eq!(dt0 - dt1, -1);
 }
 
 #[test]
